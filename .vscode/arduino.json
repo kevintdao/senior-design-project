@@ -1,6 +1,6 @@
 {
-    "board": "arduino:avr:uno",
-    "programmer": "arduino:avrisp",
     "port": "COM5",
-    "sketch": "hardware\\Blink.ino"
+    "board": "arduino:avr:nano",
+    "programmer": "arduino:arduinoasispatmega32u4",
+    "configuration": "cpu=atmega328"
 }
