@@ -4,6 +4,7 @@ import tw from 'tailwind-react-native-classnames'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
+import SignUpScreen from './screens/SignUpScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -11,7 +12,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen options={{ headerShown: false }} name='Login' component={LoginScreen} />
+        <Stack.Screen options={{ headerShown: false }} name='LoginScreen' component={LoginScreen} />
+        <Stack.Screen options={{ headerShown: false }} name='SignUpScreen' component={SignUpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
