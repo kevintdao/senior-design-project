@@ -7,10 +7,10 @@ import {
   FIREBASE_APP_ID, 
   FIREBASE_MEASUREMENT_ID
 } from "@env";
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
-const app = initializeApp({
+const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
   authDomain: FIREBASE_AUTH_DOMAIN,
   projectId: FIREBASE_PROJECT_ID,
@@ -18,8 +18,16 @@ const app = initializeApp({
   messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
   appId: FIREBASE_APP_ID,
   measurementId: FIREBASE_MEASUREMENT_ID
-})
+};
 
-export const auth = getAuth(app);
+let app;
+if (getApps().length == 0){
+  app = initializeApp(firebaseConfig);
+}
+else{
+  app = getApp();
+}
 
-export default app;
+const auth = getAuth(app);
+
+export { auth };
