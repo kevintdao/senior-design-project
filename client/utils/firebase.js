@@ -28,6 +28,6 @@ else{
   app = getApp();
 }
 
-const auth = getAuth(app);
+export const auth = getAuth(app);
 
-export { auth };
+export default app;

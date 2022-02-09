@@ -1,20 +1,34 @@
 import { View, Text, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import tw from 'tailwind-react-native-classnames';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../utils/firebase';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigation.navigate("HomeScreen");
+      }
+    })
+
+    return unsubscribe;
+  }, [])
+
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
-        .then((credential) => {
+        .then(credential => {
           const user = credential.user;
           console.log(email);
+        })
+        .catch(error => {
+          console.log(error);
         })
   }
 
