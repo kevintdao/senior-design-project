@@ -1,5 +1,9 @@
 // Senior Design Spr 2022 - Team NULL
 
+// C libraries
+#include <math.h>
+#define PI 3.141592654
+
 // L298N Motor driver pin setup
 // **Sechamatics and Pin connections word doc
 void setupMotor() {
@@ -60,8 +64,11 @@ void loop() {
 }
 
 // calculate direction of travel
-double getTargetHeading(double currentLat, double currentLon, double targetLat, double targetLon) {
-  
+double getBearing(double currentLat, double currentLon, double targetLat, double targetLon) {
+  double x = cos(targetLat) * sin(currentLon-targetLon);
+  double y = (cos(currentLat) * sin(targetLat)) - (sin(currentLat) * cos(targetLat) * cos(currentLon-targetLon));
+  double b = atan2(x,y);
+  return b;
 }
 
 // calculate distance to target
