@@ -62,8 +62,7 @@ void loop() {
   
 }
 
-// calculate direction of travel
-// argument units: degrees
+// calculate direction of travel in degrees (arg units -- degrees)
 double getBearing(double currentLat, double currentLon, double targetLat, double targetLon) {
   currentLat = currentLat * PI/180; // convert to radians
   currentLon = currentLon * PI/180;
@@ -75,7 +74,19 @@ double getBearing(double currentLat, double currentLon, double targetLat, double
   return b;
 }
 
-// calculate distance to target
+// calculate distance to target in meters
+double getDistance(double currentLat, double currentLon, double targetLat, double targetLon) {
+  currentLat = currentLat * PI/180; // convert to radians
+  currentLon = currentLon * PI/180;
+  targetLat = targetLat * PI/180;
+  targetLon = targetLon * PI/180;
+  double deltaLat = targetLat - currentLat;
+  double deltaLon = targetLon - currentLon;
+  double a = pow(sin(deltaLat/2),2) + (cos(currentLat) * cos(targetLat) * pow(sin(deltaLon/2),2));
+  double c = 2 * atan2(sqrt(a),sqrt(1-a));
+  double d = c * 6371000;
+  return d;
+}
 
 // check for objects in the way -- set offset of sensors (left and right, front)
 
