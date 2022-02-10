@@ -43,7 +43,7 @@ void setupMotor() {
 
 void setup() {
   // put your setup code here, to run once:
-
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -60,14 +60,18 @@ void loop() {
             // check state -- session start/stop
             // 
   
-
 }
 
 // calculate direction of travel
+// argument units: degrees
 double getBearing(double currentLat, double currentLon, double targetLat, double targetLon) {
-  double x = cos(targetLat) * sin(currentLon-targetLon);
-  double y = (cos(currentLat) * sin(targetLat)) - (sin(currentLat) * cos(targetLat) * cos(currentLon-targetLon));
-  double b = atan2(x,y);
+  currentLat = currentLat * PI/180; // convert to radians
+  currentLon = currentLon * PI/180;
+  targetLat = targetLat * PI/180;
+  targetLon = targetLon * PI/180;
+  double x = cos(targetLat) * sin(targetLon-currentLon);
+  double y = (cos(currentLat) * sin(targetLat)) - (sin(currentLat) * cos(targetLat) * cos(targetLon-currentLon));
+  double b = atan2(x,y) * 180 / PI; // convert back to degrees
   return b;
 }
 
