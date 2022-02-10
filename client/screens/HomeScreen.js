@@ -8,7 +8,7 @@ const HomeScreen = ( ) => {
   return (
       <SafeAreaView>
         <Text>Home</Text>
-        <View> 
+        <View style={tw`flex-1 items-center`}> 
           <TouchableOpacity>
             <Text>Begin New Session</Text>
           </TouchableOpacity>
