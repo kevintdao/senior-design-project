@@ -6,33 +6,37 @@ import tw from 'tailwind-react-native-classnames';
 const HomeScreen = ( ) => {
   const navigation = useNavigation();
   return (
-      <SafeAreaView style={tw`flex-1 items-center bg-green-700`}>
-        <Text style={tw`text-white`}>Home</Text>
-        <View style={tw`flex-1 items-center bg-green-300`}> 
-          <View style={tw`bg-green-600`}> 
+      <>
+      <View style={tw`bg-green-800 p-4 items-center`}>
+         <Text style={tw`text-white`}>Home</Text>
+      </View>
+      <SafeAreaView style={tw`flex-1 items-center bg-blue-200`}>
+        
+        <View style={tw`grid grid-cols-2 grid-rows-4 grid-flow-row-dense bg-green-300 mt-5`}> 
+          <View style={tw`bg-green-600 mb-3 items-center rounded-md p-2`}> 
             <TouchableOpacity>
               <Text style={tw`text-white`}>Begin New Session</Text>
             </TouchableOpacity>
           </View>
-          <View style={tw`bg-green-600`}>
+          <View style={tw`bg-green-600 mb-3 items-center rounded-md p-2`}>
             <TouchableOpacity>
               <Text style={tw`text-white`}>Data Viewing and Analysis</Text>
             </TouchableOpacity>
           </View>
-          <View style={tw`bg-green-600`}>
+          <View style={tw`bg-green-600 mb-3 items-center rounded-md p-2`}>
             <TouchableOpacity>
               <Text style={tw`text-white`}>Sensor Testing</Text>
             </TouchableOpacity>
           </View>
 
 
-          <View style={tw`bg-red-300 content-start`}>
-            <View style={tw`bg-green-600 items-center`}>
+          <View style={tw`bg-red-300`}>
+            <View style={tw`bg-green-800 items-center rounded-md p-3`}>
               <TouchableOpacity>
                 <Text style={tw`text-white`}>&#x2699;</Text>
               </TouchableOpacity>
             </View>
-            <View style={tw`bg-green-600 items-center`}>
+            <View style={tw`bg-green-800 items-center rounded-md p-2`}>
               <TouchableOpacity>
                 <Text style={tw`text-white`}>&#x3f;</Text>
               </TouchableOpacity>
@@ -42,6 +46,7 @@ const HomeScreen = ( ) => {
         </View>
         
       </SafeAreaView>
+      </>
     );
   }
   
