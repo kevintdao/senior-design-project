@@ -1,6 +1,15 @@
 // Senior Design Spr 2022 - Team NULL
 
-// Motor driver pin setup
+// L298N Motor driver pin setup
+// **Sechamatics and Pin connections word doc
+void setupMotor() {
+  const int enA = 10;
+  const int in1 = 9;
+  const int in2 = 8;
+  const int enB = 5;
+  const int in3 = 7;
+  const int in4 = 6;
+}
 
 // GPS pin setup
 
