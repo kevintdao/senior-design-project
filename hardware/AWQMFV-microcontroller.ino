@@ -1,6 +1,19 @@
 // Senior Design Spr 2022 - Team NULL
 
-// Motor driver pin setup
+// C libraries
+#include <math.h>
+#define PI 3.141592654
+
+// L298N Motor driver pin setup
+// **Sechamatics and Pin connections word doc
+void setupMotor() {
+  const int enA = 10;
+  const int in1 = 9;
+  const int in2 = 8;
+  const int enB = 5;
+  const int in3 = 7;
+  const int in4 = 6;
+}
 
 // GPS pin setup
 
@@ -22,13 +35,15 @@
 // target location (coordinates)
 // sensor1 measurement
 // current time/time of measurement ??
+// current direction/heading (via magnetometer)
+// target direction/heading (via calculation)
 
 
 
 
 void setup() {
   // put your setup code here, to run once:
-
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -45,12 +60,33 @@ void loop() {
             // check state -- session start/stop
             // 
   
-
 }
 
-// calculate direction of travel
+// calculate direction of travel in degrees (arg units -- degrees)
+double getBearing(double currentLat, double currentLon, double targetLat, double targetLon) {
+  currentLat = currentLat * PI/180; // convert to radians
+  currentLon = currentLon * PI/180;
+  targetLat = targetLat * PI/180;
+  targetLon = targetLon * PI/180;
+  double x = cos(targetLat) * sin(targetLon-currentLon);
+  double y = (cos(currentLat) * sin(targetLat)) - (sin(currentLat) * cos(targetLat) * cos(targetLon-currentLon));
+  double b = atan2(x,y) * 180 / PI; // convert back to degrees
+  return b;
+}
 
-// calculate distance to target
+// calculate distance to target in meters
+double getDistance(double currentLat, double currentLon, double targetLat, double targetLon) {
+  currentLat = currentLat * PI/180; // convert to radians
+  currentLon = currentLon * PI/180;
+  targetLat = targetLat * PI/180;
+  targetLon = targetLon * PI/180;
+  double deltaLat = targetLat - currentLat;
+  double deltaLon = targetLon - currentLon;
+  double a = pow(sin(deltaLat/2),2) + (cos(currentLat) * cos(targetLat) * pow(sin(deltaLon/2),2));
+  double c = 2 * atan2(sqrt(a),sqrt(1-a));
+  double d = c * 6371000;
+  return d;
+}
 
 // check for objects in the way -- set offset of sensors (left and right, front)
 
