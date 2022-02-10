@@ -26,7 +26,7 @@ const HomeScreen = ( ) => {
           </View>
 
 
-          <View style={tw`bg-red-300`}>
+          <View style={tw`bg-red-300 content-start`}>
             <View style={tw`bg-green-600 items-center`}>
               <TouchableOpacity>
                 <Text style={tw`text-white`}>&#x2699;</Text>
