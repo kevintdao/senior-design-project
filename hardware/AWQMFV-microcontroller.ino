@@ -31,6 +31,8 @@ void setupMotor() {
 // target location (coordinates)
 // sensor1 measurement
 // current time/time of measurement ??
+// current direction/heading (via magnetometer)
+// target direction/heading (via calculation)
 
 
 
@@ -58,6 +60,9 @@ void loop() {
 }
 
 // calculate direction of travel
+double getTargetHeading(double currentLat, double currentLon, double targetLat, double targetLon) {
+  
+}
 
 // calculate distance to target
 
