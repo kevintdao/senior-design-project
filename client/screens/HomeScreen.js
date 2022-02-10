@@ -1,23 +1,37 @@
 import React from 'react';
-import { Text, View, Button} from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = ( ) => {
   const navigation = useNavigation();
-    return (
-        <View>
-          <Text>Home</Text>
-          <View> {/* Button Container */}
-            <TouchableOpacity title="Begin New Session" onPress={()=> navigation.navigate('NewSession')}/>
-            <TouchableOpacity title="Data Viewing & Analysis" onPress={()=> navigation.navigate('Data')}/>
-            <TouchableOpacity title="Sensor Testing" onPress={()=> navigation.navigate('Test')}/>
-            <View>
-              <TouchableOpacity title="Settings" onPress={()=> navigation.navigate('Settings')}/>
-              <TouchableOpacity title="Help" onPress={()=> navigation.navigate('Help')}/>
-            </View>
+  return (
+      <SafeAreaView>
+        <Text>Home</Text>
+        <View> 
+          <TouchableOpacity>
+            <Text>Begin New Session</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text>Data Viewing and Analysis</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text>Sensor Testing</Text>
+          </TouchableOpacity>
+
+          <View>
+            <TouchableOpacity>
+              <Text>Settings</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <Text>Help</Text>
+            </TouchableOpacity>
           </View>
         </View>
-        );
+        
+      </SafeAreaView>
+    );
   }
   
   export default HomeScreen
