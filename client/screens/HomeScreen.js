@@ -29,12 +29,12 @@ const HomeScreen = ( ) => {
           <View style={tw`bg-red-300`}>
             <View style={tw`bg-green-600 items-center`}>
               <TouchableOpacity>
-                <Text style={tw`text-white`}>Settings</Text>
+                <Text style={tw`text-white`}>&#x2699;</Text>
               </TouchableOpacity>
             </View>
             <View style={tw`bg-green-600 items-center`}>
               <TouchableOpacity>
-                <Text style={tw`text-white`}>Help</Text>
+                <Text style={tw`text-white`}>&#x3f;</Text>
               </TouchableOpacity>
             </View>
           </View>
