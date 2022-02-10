@@ -7,27 +7,38 @@ const HomeScreen = ( ) => {
   const navigation = useNavigation();
   return (
       <SafeAreaView style={tw`flex-1 items-center bg-green-700`}>
-        <Text>Home</Text>
-        <View style={tw`flex-1 items-center`}> 
-          <TouchableOpacity>
-            <Text>Begin New Session</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>Data Viewing and Analysis</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>Sensor Testing</Text>
-          </TouchableOpacity>
-
-          <View>
+        <Text style={tw`text-white`}>Home</Text>
+        <View style={tw`flex-1 items-center bg-green-300`}> 
+          <View style={tw`bg-green-600`}> 
             <TouchableOpacity>
-              <Text>Settings</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity>
-              <Text>Help</Text>
+              <Text style={tw`text-white`}>Begin New Session</Text>
             </TouchableOpacity>
           </View>
+          <View style={tw`bg-green-600`}>
+            <TouchableOpacity>
+              <Text style={tw`text-white`}>Data Viewing and Analysis</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={tw`bg-green-600`}>
+            <TouchableOpacity>
+              <Text style={tw`text-white`}>Sensor Testing</Text>
+            </TouchableOpacity>
+          </View>
+
+
+          <View style={tw`bg-red-300`}>
+            <View style={tw`bg-green-600 items-center`}>
+              <TouchableOpacity>
+                <Text style={tw`text-white`}>Settings</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={tw`bg-green-600 items-center`}>
+              <TouchableOpacity>
+                <Text style={tw`text-white`}>Help</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
         </View>
         
       </SafeAreaView>
