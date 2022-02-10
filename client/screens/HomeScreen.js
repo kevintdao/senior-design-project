@@ -30,13 +30,13 @@ const HomeScreen = ( ) => {
           </View>
 
 
-          <View style={tw`bg-red-300`}>
-            <View style={tw`bg-green-800 items-center rounded-md p-3`}>
+          <View style={tw``}>
+            <View style={tw`bg-green-800 items-center rounded-md p-3 mr-2`}>
               <TouchableOpacity>
-                <Text style={tw`text-white`}>&#x2699;</Text>
+                <Text style={tw`text-white `}>&#x2699;</Text>
               </TouchableOpacity>
             </View>
-            <View style={tw`bg-green-800 items-center rounded-md p-2`}>
+            <View style={tw`bg-green-800 items-center rounded-md p-2 ml-2`}>
               <TouchableOpacity>
                 <Text style={tw`text-white`}>&#x3f;</Text>
               </TouchableOpacity>
