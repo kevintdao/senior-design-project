@@ -6,13 +6,12 @@ import tw from 'tailwind-react-native-classnames';
 const HomeScreen = ( ) => {
   const navigation = useNavigation();
   return (
-      <>
-      <View style={tw`bg-green-800 p-4 items-center`}>
-         <Text style={tw`text-white`}>Home</Text>
-      </View>
       <SafeAreaView style={tw`flex-1 items-center bg-blue-200`}>
+        <View>
+          <Text style={tw`text-black`}>Home</Text>
+        </View>
         
-        <View style={tw`grid grid-cols-2 grid-rows-4 grid-flow-row-dense bg-green-300 mt-5`}> 
+        <View style={tw`mt-5`}> 
           <View style={tw`bg-green-600 mb-3 items-center rounded-md p-2`}> 
             <TouchableOpacity>
               <Text style={tw`text-white`}>Begin New Session</Text>
@@ -31,12 +30,12 @@ const HomeScreen = ( ) => {
 
 
           <View style={tw``}>
-            <View style={tw`bg-green-800 items-center rounded-md p-3 mr-2`}>
+            <View style={tw`bg-green-800 items-center rounded-md p-3`}>
               <TouchableOpacity>
                 <Text style={tw`text-white `}>&#x2699;</Text>
               </TouchableOpacity>
             </View>
-            <View style={tw`bg-green-800 items-center rounded-md p-2 ml-2`}>
+            <View style={tw`bg-green-800 items-center rounded-md p-2 mt-2`}>
               <TouchableOpacity>
                 <Text style={tw`text-white`}>&#x3f;</Text>
               </TouchableOpacity>
@@ -46,7 +45,6 @@ const HomeScreen = ( ) => {
         </View>
         
       </SafeAreaView>
-      </>
     );
   }
   
