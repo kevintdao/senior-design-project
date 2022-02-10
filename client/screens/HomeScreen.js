@@ -6,7 +6,7 @@ import tw from 'tailwind-react-native-classnames';
 const HomeScreen = ( ) => {
   const navigation = useNavigation();
   return (
-      <SafeAreaView>
+      <SafeAreaView style={tw`flex-1 items-center bg-green-700`}>
         <Text>Home</Text>
         <View style={tw`flex-1 items-center`}> 
           <TouchableOpacity>
