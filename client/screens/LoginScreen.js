@@ -23,13 +23,13 @@ export default function LoginScreen() {
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
-        .then(credential => {
-          const user = credential.user;
-          console.log(email);
-        })
-        .catch(error => {
-          console.log(error);
-        })
+      .then(credential => {
+        const user = credential.user;
+        console.log(email);
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 
   return (
