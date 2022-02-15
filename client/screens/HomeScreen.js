@@ -13,7 +13,8 @@ const HomeScreen = ( ) => {
         
         <View style={tw`mt-5`}> 
           <View style={tw`bg-green-600 mb-3 items-center rounded-md p-2`}> 
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={ () =>navigation.navigate('StartSessionScreen')}>
               <Text style={tw`text-white`}>Begin New Session</Text>
             </TouchableOpacity>
           </View>
