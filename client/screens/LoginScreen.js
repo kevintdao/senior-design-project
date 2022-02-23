@@ -14,8 +14,8 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
+    setLoading(true);
     try{
-      setLoading(true);
       await login(email, password);
     } catch {
       console.log("failed to login")

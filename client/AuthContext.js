@@ -32,6 +32,9 @@ export function AuthProvider({ children }){
 
   useEffect(() => {
     loadStorageData();
+    return () => {
+      setLoading(false);
+    }
   }, [])
 
   const loadStorageData = async () => {
