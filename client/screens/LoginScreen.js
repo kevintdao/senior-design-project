@@ -35,14 +35,14 @@ export default function LoginScreen() {
       <SafeAreaView style={tw`w-4/5`}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Login</Text>
         <TextInput
-          style={tw`bg-white rounded p-2 my-1 border border-gray-300`}
+          style={tw`bg-white rounded p-3 my-1 border border-gray-300`}
           placeholder='Email'
           value={email}
           onChangeText={text => setEmail(text)}
         />
         
         <TextInput
-          style={tw`bg-white rounded p-2 my-1 border border-gray-300`}
+          style={tw`bg-white rounded p-3 my-1 border border-gray-300`}
           placeholder='Password'
           secureTextEntry
           value={password}
@@ -50,7 +50,7 @@ export default function LoginScreen() {
         />
       </SafeAreaView>
 
-      <View style={tw`bg-indigo-700 rounded p-2 mb-2 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-2 w-4/5`}>
         <TouchableOpacity
           onPress={handleLogin}
         >
@@ -58,12 +58,12 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={tw`bg-indigo-700 rounded p-2 mb-2 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-2 w-4/5`}>
         <TouchableOpacity 
           style={tw``}
           onPress={() => navigation.navigate('SignUpScreen')}
         >
-          <Text style={tw`text-center text-white`}>Register</Text>
+          <Text style={tw`text-center text-white`}>Don't have an account?</Text>
         </TouchableOpacity>
       </View>
       

@@ -19,6 +19,7 @@ export function AuthProvider({ children }){
 
   const login = async (email, password) => {
     const data = await signInWithEmailAndPassword(auth, email, password);
+    console.log(data);
     setCurrentUser(data);
     AsyncStorage.setItem("auth_data", JSON.stringify(data));
   }
