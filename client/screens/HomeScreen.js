@@ -53,11 +53,10 @@ const HomeScreen = ( ) => {
             </View>
 
             <View style={tw``}>
-              <TouchableOpacity style={tw`bg-green-800 items-center rounded-md p-2 mt-2`}>
-                <Text 
-                  style={tw`text-white`}
-                  onPress={handleLogout}
-                >
+              <TouchableOpacity style={tw`bg-green-800 items-center rounded-md p-2 mt-2`}
+                onPress={handleLogout}
+              >
+                <Text style={tw`text-white`}>
                   Logout
                 </Text>
               </TouchableOpacity>

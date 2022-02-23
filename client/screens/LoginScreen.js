@@ -50,7 +50,7 @@ export default function LoginScreen() {
         />
       </SafeAreaView>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-2 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
         <TouchableOpacity
           onPress={handleLogin}
         >
@@ -58,7 +58,7 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-2 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
         <TouchableOpacity 
           style={tw``}
           onPress={() => navigation.navigate('SignUpScreen')}

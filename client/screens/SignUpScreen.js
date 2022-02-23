@@ -2,8 +2,10 @@ import { View, Text, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'r
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'tailwind-react-native-classnames';
+import { useNavigation } from '@react-navigation/native';
 
 export default function SignUpScreen() {
+  const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConf, setPasswordConf] = useState('');
@@ -38,15 +40,16 @@ export default function SignUpScreen() {
           onChangeText={text => setPasswordConf(text)}
         />
       </SafeAreaView>
-      <View style={tw`bg-indigo-700 rounded p-3 mb-2 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
         <TouchableOpacity
         >
           <Text style={tw`text-center text-white`}>Signup</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-2 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
         <TouchableOpacity
+          onPress={() => navigation.navigate('LoginScreen')}
         >
           <Text style={tw`text-center text-white`}>Already have an account?</Text>
         </TouchableOpacity>
