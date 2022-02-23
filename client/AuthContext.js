@@ -1,7 +1,7 @@
-import { View, Text } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { auth } from './utils/firebase';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthContext = React.createContext();
 
@@ -13,25 +13,42 @@ export function AuthProvider({ children }){
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
   
-  function signup(email, password){
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signup = async (email, password) => {
+    const data = await createUserWithEmailAndPassword(auth, email, password);
   }
 
-  function login(email, password){
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async (email, password) => {
+    const data = await signInWithEmailAndPassword(auth, email, password);
+    setCurrentUser(data);
+    AsyncStorage.setItem("auth_data", JSON.stringify(data));
   }
 
-  function logout(){
-    return signOut(auth);
+  const logout = async () => {
+    setCurrentUser(undefined);
+
+    const data = await signOut(auth);
+    await AsyncStorage.removeItem("auth_data");
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-    });
-
-    return unsubscribe;
+    loadStorageData();
   }, [])
+
+  const loadStorageData = async () => {
+    try{
+      const authData = await AsyncStorage.getItem("auth_data");
+      if(authData){
+        const data = JSON.parse(authData);
+        setCurrentUser(data);
+      }
+    }
+    catch(error){
+
+    }
+    finally{
+      setLoading(false);
+    }
+  }
 
   const value = {
     currentUser,

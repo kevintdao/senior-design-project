@@ -3,17 +3,17 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'tailwind-react-native-classnames';
-import { auth } from '../utils/firebase';
-import { signOut } from 'firebase/auth';
+import { useAuth } from '../AuthContext';
+
 
 const HomeScreen = ( ) => {
   const navigation = useNavigation();
+  const { logout } = useAuth();
   
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        navigation.navigate("LoginScreen");
-      });
+  const handleLogout = async () => {
+    await logout().then(() =>{
+      navigation.nagivate("LoginScreen");
+    });
   }
 
   return (

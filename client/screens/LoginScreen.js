@@ -18,7 +18,7 @@ export default function LoginScreen() {
       setLoading(true);
       await login(email, password);
     } catch {
-
+      console.log("failed to login")
     }
     setLoading(false);
   }
