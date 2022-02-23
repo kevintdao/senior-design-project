@@ -3,33 +3,28 @@ import React, { useEffect, useState } from 'react';
 import tw from 'tailwind-react-native-classnames';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../utils/firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import { useAuth } from '../AuthContext';
+import Loading from '../components/Loading';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navigation.navigate("HomeScreen");
-      }
-    })
+  const handleLogin = async () => {
+    try{
+      setLoading(true);
+      await login(email, password);
+    } catch {
 
-    return unsubscribe;
-  }, [])
+    }
+    setLoading(false);
+  }
 
-  const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then(credential => {
-        const user = credential.user;
-        console.log(email);
-      })
-      .catch(error => {
-        console.log(error);
-      })
+  if (loading) {
+    return <Loading />
   }
 
   return (

@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { auth } from '../utils/firebase';
+import { auth } from './utils/firebase';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
 const AuthContext = React.createContext();
@@ -11,6 +11,7 @@ export function useAuth(){
 
 export function AuthProvider({ children }){
   const [currentUser, setCurrentUser] = useState();
+  const [loading, setLoading] = useState(true);
   
   function signup(email, password){
     return createUserWithEmailAndPassword(auth, email, password);
@@ -30,10 +31,13 @@ export function AuthProvider({ children }){
     });
 
     return unsubscribe;
-  })
+  }, [])
 
   const value = {
-    currentUser
+    currentUser,
+    login,
+    signup,
+    logout
   }
 
   return (
