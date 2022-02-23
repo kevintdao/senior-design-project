@@ -39,7 +39,7 @@ export default function LoginScreen() {
 
     // check login with firebase
     try{
-      const data = await login(email, password);
+      await login(email, password);
     } catch(error) {
       setAlert({
         type: "error",

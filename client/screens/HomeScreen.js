@@ -12,7 +12,7 @@ const HomeScreen = ( ) => {
   
   const handleLogout = async () => {
     await logout().then(() =>{
-      navigation.nagivate("LoginScreen");
+      navigation.navigate('LoginScreen');
     });
   }
 
