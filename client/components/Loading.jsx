@@ -4,8 +4,8 @@ import tw from 'tailwind-react-native-classnames';
 
 export default function Loading() {
   return (
-    <View style={tw`flex-1 items-center`}>
-      <ActivityIndicator />
+    <View style={tw`flex-1 items-center justify-center`}>
+      <ActivityIndicator color="#000000"/>
     </View>
   )
 }
