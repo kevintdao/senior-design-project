@@ -5,20 +5,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
 import Loading from '../components/Loading';
+import Alert from '../components/Alert';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     setLoading(true);
     try{
-      await login(email, password);
-    } catch {
-      console.log("failed to login")
+      const data = await login(email, password);
+    } catch(error) {
+      console.log(error.message);
     }
     setLoading(false);
   }
@@ -34,6 +36,9 @@ export default function LoginScreen() {
     >
       <SafeAreaView style={tw`w-4/5`}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Login</Text>
+
+        {Object.keys(alert).length === 0 ? undefined : <Alert type={alert.type} text={alert.text}/>}
+
         <TextInput
           style={tw`bg-white rounded p-3 my-1 border border-gray-300`}
           placeholder='Email'
