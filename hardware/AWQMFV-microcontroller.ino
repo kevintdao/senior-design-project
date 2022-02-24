@@ -107,7 +107,7 @@ double getCurrentLat() {
 
 double getCurrentLon() {
   if (gps.location.isValid()) {
-    return gps.location.lat();
+    return gps.location.lng();
   }
   else {
     return 911; // invalid reading
