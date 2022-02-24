@@ -54,6 +54,10 @@ void setupUltra() {
   pinMode(echoPin, INPUT);
 }
 
+// defines variables
+long duration; // variable for the duration of sound wave travel
+int distance; // variable for the distance measurement
+
 void loopUltra()
 {
   // Clears the trigPin condition
