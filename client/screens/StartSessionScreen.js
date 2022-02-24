@@ -1,8 +1,9 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
-import tw from 'tailwind-react-native-classnames'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React from 'react';
+import tw from 'tailwind-react-native-classnames';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import MapView from 'react-native-maps';
 const StartSessionScreen = () => {
   const navigation = useNavigation();
   return (
@@ -20,9 +21,26 @@ const StartSessionScreen = () => {
             <Text>Home</Text>
           </TouchableOpacity>
         </View>
+        <View>
+          <MapView style={styles.map} />
+        </View>
     </SafeAreaView>
 
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+});
+
 
 export default StartSessionScreen
