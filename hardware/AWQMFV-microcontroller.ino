@@ -1,7 +1,10 @@
 // Senior Design Spr 2022 - Team NULL
 
 // C libraries
-#include <math.h>
+#include <math.h> // built-in
+#include <TinyGPSPlus.h> // installed
+#include <SoftwareSerial.h> // built-in
+
 #define PI 3.141592654
 
 // L298N Motor driver pin setup
@@ -15,7 +18,11 @@ void setupMotor() {
   const int in4 = 6;
 }
 
-// GPS pin setup
+// GPS setup
+static const int RXPin = 4, TXPin = 3;
+static const uint32_t GPSBaud = 9600;
+TinyGPSPlus gps;
+SoftwareSerial ss(RXPin, TXPin);
 
 // Sensor1 pin setup
 
@@ -44,6 +51,7 @@ void setupMotor() {
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  ss.begin(GPSBaud);
 }
 
 void loop() {

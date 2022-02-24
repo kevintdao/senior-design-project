@@ -8,7 +8,9 @@ import {
   FIREBASE_MEASUREMENT_ID
 } from "@env";
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, initializeAuth } from "firebase/auth";
+import { getReactNativePersistence } from 'firebase/auth/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -21,13 +23,18 @@ const firebaseConfig = {
 };
 
 let app;
+let auth;
 if (getApps().length == 0){
   app = initializeApp(firebaseConfig);
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  });
 }
 else{
   app = getApp();
+  auth = getAuth();
 }
 
-export const auth = getAuth(app);
+export { auth };
 
 export default app;
