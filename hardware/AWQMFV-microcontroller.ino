@@ -7,15 +7,17 @@
 
 #define PI 3.141592654
 
-// L298N Motor driver pin setup
-// **Sechamatics and Pin connections word doc
+// L293D Motor driver pin setup
+const int motor1pin1 = 5;
+const int motor1pin2 = 6;
+const int motor2pin1 = 9;
+const int motor2pin2 = 8;
+  
 void setupMotor() {
-  const int enA = 10;
-  const int in1 = 9;
-  const int in2 = 8;
-  const int enB = 5;
-  const int in3 = 7;
-  const int in4 = 6;
+  pinMode(motor1pin1, OUTPUT);
+  pinMode(motor1pin2, OUTPUT);
+  pinMode(motor2pin1, OUTPUT);
+  pinMode(motor2pin2, OUTPUT);
 }
 
 // GPS setup
@@ -51,6 +53,7 @@ SoftwareSerial ss(RXPin, TXPin);
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  setupMotor();
   ss.begin(GPSBaud);
 }
 
@@ -67,6 +70,22 @@ void loop() {
       // Wifi module -- send data variables e.g. location, current reading
             // check state -- session start/stop
             // 
+  //  Turn both motors clockwise and counter clockwise with 1s delay
+  analogWrite(motor1pin1, 255);
+  analogWrite(motor1pin2, 0);
+  delay(1000);
+
+  analogWrite(motor1pin1, 0);
+  analogWrite(motor1pin2, 255);
+  delay(1000);
+
+  analogWrite(motor2pin1, 255);
+  analogWrite(motor2pin2, 0);
+  delay(1000);
+
+  analogWrite(motor2pin1, 0);
+  analogWrite(motor2pin2, 255);
+  delay(1000);
   
 }
 
