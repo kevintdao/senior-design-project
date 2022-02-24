@@ -96,6 +96,24 @@ double getDistance(double currentLat, double currentLon, double targetLat, doubl
   return d;
 }
 
+double getCurrentLat() {
+  if (gps.location.isValid()) {
+    return gps.location.lat();
+  }
+  else {
+    return 911; // invalid reading - if lat or lng = 911 halt the boat
+  }
+}
+
+double getCurrentLon() {
+  if (gps.location.isValid()) {
+    return gps.location.lat();
+  }
+  else {
+    return 911; // invalid reading
+  }
+}
+
 // check for objects in the way -- set offset of sensors (left and right, front)
 
 // correct direction for objects
