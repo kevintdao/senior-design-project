@@ -3,8 +3,19 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'tailwind-react-native-classnames';
+import { useAuth } from '../AuthContext';
+
+
 const HomeScreen = ( ) => {
   const navigation = useNavigation();
+  const { logout } = useAuth();
+  
+  const handleLogout = async () => {
+    await logout().then(() =>{
+      navigation.navigate('LoginScreen');
+    });
+  }
+
   return (
       <SafeAreaView style={tw`flex-1 items-center bg-blue-200`}>
         <View>
@@ -30,7 +41,7 @@ const HomeScreen = ( ) => {
 
 
           <View style={tw``}>
-            <View style={tw`bg-green-800 items-center rounded-md p-3`}>
+            <View style={tw`bg-green-800 items-center rounded-md p-2`}>
               <TouchableOpacity>
                 <Text style={tw`text-white `}>&#x2699;</Text>
               </TouchableOpacity>
@@ -38,6 +49,16 @@ const HomeScreen = ( ) => {
             <View style={tw`bg-green-800 items-center rounded-md p-2 mt-2`}>
               <TouchableOpacity>
                 <Text style={tw`text-white`}>&#x3f;</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={tw``}>
+              <TouchableOpacity style={tw`bg-green-800 items-center rounded-md p-2 mt-2`}
+                onPress={handleLogout}
+              >
+                <Text style={tw`text-white`}>
+                  Logout
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
