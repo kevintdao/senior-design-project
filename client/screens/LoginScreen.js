@@ -1,6 +1,6 @@
 import { View, Text, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import tw from 'tailwind-react-native-classnames';
+import tw from 'twrnc';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
@@ -52,9 +52,9 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView
       behavior='padding'
-      style={tw`flex-1 items-center bg-gray-100`}
+      style={tw`flex-1 items-center bg-gray-100 max-w-3xl `}
     >
-      <SafeAreaView style={tw`w-4/5`}>
+      <SafeAreaView style={tw`w-4/5 mb-4`}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Login</Text>
 
         {Object.keys(alert).length === 0 ? undefined : <Alert type={alert.type} text={alert.text}/>}
