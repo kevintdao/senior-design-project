@@ -68,7 +68,7 @@ export default function SignUpScreen() {
     return (
       <SafeAreaView style={tw`flex-1 items-center justify-center`}>
         <Text style={tw`text-2xl font-bold text-gray-900 mb-5 text-center`}>Registration Successful!</Text>
-        <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
+        <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
           <TouchableOpacity
             onPress={() => navigation.navigate('LoginScreen')}
           >
@@ -84,7 +84,7 @@ export default function SignUpScreen() {
       behavior='padding'
       style={tw`flex-1 items-center bg-gray-100`}
     >
-      <SafeAreaView style={tw`w-4/5`}>
+      <SafeAreaView style={tw`w-4/5 max-w-md mb-4`}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Register</Text>
 
         {Object.keys(alert).length === 0 ? undefined : <Alert type={alert.type} text={alert.text}/>}
@@ -112,19 +112,20 @@ export default function SignUpScreen() {
           onChangeText={text => setPasswordConf(text)}
         />
       </SafeAreaView>
-      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
+
+      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
         <TouchableOpacity
           onPress={handleSignup}
         >
-          <Text style={tw`text-center text-white text-lg`}>Signup</Text>
+          <Text style={tw`text-center text-white font-bold`}>Signup</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
         <TouchableOpacity
           onPress={() => navigation.navigate('LoginScreen')}
         >
-          <Text style={tw`text-center text-white text-lg`}>Already have an account?</Text>
+          <Text style={tw`text-center text-white font-bold`}>Already have an account?</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

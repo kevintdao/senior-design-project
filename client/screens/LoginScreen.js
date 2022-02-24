@@ -52,9 +52,9 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView
       behavior='padding'
-      style={tw`flex-1 items-center bg-gray-100 max-w-3xl `}
+      style={tw`bg-gray-100 flex-1 items-center`}
     >
-      <SafeAreaView style={tw`w-4/5 mb-4`}>
+      <SafeAreaView style={tw`w-4/5 max-w-md mb-4`}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Login</Text>
 
         {Object.keys(alert).length === 0 ? undefined : <Alert type={alert.type} text={alert.text}/>}
@@ -75,7 +75,7 @@ export default function LoginScreen() {
         />
       </SafeAreaView>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
         <TouchableOpacity
           onPress={handleLogin}
         >
@@ -83,7 +83,7 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
         <TouchableOpacity 
           style={tw``}
           onPress={() => navigation.navigate('SignUpScreen')}
