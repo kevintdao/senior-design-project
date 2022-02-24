@@ -16,28 +16,24 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    setLoading(true);
     setAlert({});
 
     if(!email){
-      setAlert({
+      return setAlert({
         type: "warning",
         text: "Email is empty!"
       })
-      setLoading(false);
-      return;
     }
 
     if(!password){
-      setAlert({
+      return setAlert({
         type: "warning",
         text: "Password is empty!"
       })
-      setLoading(false);
-      return;
     }
 
     // check login with firebase
+    setLoading(true);
     try{
       await login(email, password);
     } catch(error) {
