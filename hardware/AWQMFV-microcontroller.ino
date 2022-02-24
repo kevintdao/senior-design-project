@@ -7,7 +7,7 @@
 
 #define PI 3.141592654
 
-// L293D Motor driver pin setup
+// L293D Motor driver pin setup and loop
 const int motor1pin1 = 5;
 const int motor1pin2 = 6;
 const int motor2pin1 = 9;
@@ -20,14 +20,58 @@ void setupMotor() {
   pinMode(motor2pin2, OUTPUT);
 }
 
+void loopMotor() {
+  //  Turn both motors clockwise and counter clockwise with 1s delay
+  analogWrite(motor1pin1, 255);
+  analogWrite(motor1pin2, 0);
+  delay(1000);
+
+  analogWrite(motor1pin1, 0);
+  analogWrite(motor1pin2, 255);
+  delay(1000);
+
+  analogWrite(motor2pin1, 255);
+  analogWrite(motor2pin2, 0);
+  delay(1000);
+
+  analogWrite(motor2pin1, 0);
+  analogWrite(motor2pin2, 255);
+  delay(1000);
+}
+
 // GPS setup
 static const int RXPin = 4, TXPin = 3;
 static const uint32_t GPSBaud = 9600;
 TinyGPSPlus gps;
 SoftwareSerial ss(RXPin, TXPin);
 
-// Sensor1 pin setup
+// Ultrasonic-Sensor HC-SR04 pin setup and loop
+const int echoPin = 2;
+const int trigPin = 3;
 
+void setupUltra() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+void loopUltra()
+{
+  // Clears the trigPin condition
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  // Displays the distance on the Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+}
 // Wifi module pin setup
 
   // hotspot setup for wifi module
@@ -55,6 +99,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   setupMotor();
+  setupUltra();
   ss.begin(GPSBaud);
 }
 
@@ -82,7 +127,8 @@ void loop() {
   }
   double targetBear = getBearing(currentLat, currentLon, targetLat, targetLon);
   
-  turnMotorTest(); // fatima's testing function for motors
+  loopMotor(); // fatima's testing function for motors
+  loopUltra(); // testing ultrasonic sensor
   
 }
 
@@ -133,25 +179,6 @@ double getCurrentLon() {
 double getCurrentBear() {
   return 0;
   // insert magnetometer code here
-}
-
-void turnMotorTest() {
-  //  Turn both motors clockwise and counter clockwise with 1s delay
-  analogWrite(motor1pin1, 255);
-  analogWrite(motor1pin2, 0);
-  delay(1000);
-
-  analogWrite(motor1pin1, 0);
-  analogWrite(motor1pin2, 255);
-  delay(1000);
-
-  analogWrite(motor2pin1, 255);
-  analogWrite(motor2pin2, 0);
-  delay(1000);
-
-  analogWrite(motor2pin1, 0);
-  analogWrite(motor2pin2, 255);
-  delay(1000);
 }
 
 // check for objects in the way -- set offset of sensors (left and right, front)
