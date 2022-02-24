@@ -31,7 +31,9 @@ const StartSessionScreen = () => {
               latitudeDelta: 0.09,
               longitudeDelta: 0.04,
             }}>
-           
+           <Marker
+            coordinate={{latitude: 41.65944687412238,
+              longitude: -91.53652901001102,}} />
           </MapView>
         </View>
     </SafeAreaView>
