@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import tw from 'tailwind-react-native-classnames';
+import tw from 'twrnc';
 
 export default function Alert(props) {
   const type = props.type;

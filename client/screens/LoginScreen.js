@@ -1,6 +1,6 @@
 import { View, Text, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import tw from 'tailwind-react-native-classnames';
+import tw from 'twrnc';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../AuthContext';
@@ -52,9 +52,9 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView
       behavior='padding'
-      style={tw`flex-1 items-center`}
+      style={tw`bg-gray-100 flex-1 items-center`}
     >
-      <SafeAreaView style={tw`w-4/5`}>
+      <SafeAreaView style={tw`w-4/5 max-w-md mb-4`}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Login</Text>
 
         {Object.keys(alert).length === 0 ? undefined : <Alert type={alert.type} text={alert.text}/>}
@@ -75,20 +75,20 @@ export default function LoginScreen() {
         />
       </SafeAreaView>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
         <TouchableOpacity
           onPress={handleLogin}
         >
-          <Text style={tw`text-center text-white`}>Login</Text>
+          <Text style={tw`text-center text-white font-bold`}>Login</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
+      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
         <TouchableOpacity 
           style={tw``}
           onPress={() => navigation.navigate('SignUpScreen')}
         >
-          <Text style={tw`text-center text-white`}>Don't have an account?</Text>
+          <Text style={tw`text-center text-white font-bold`}>Don't have an account?</Text>
         </TouchableOpacity>
       </View>
       
