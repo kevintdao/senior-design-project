@@ -7,7 +7,7 @@ import SignUpScreen from './screens/SignUpScreen';
 import HomeScreen from './screens/HomeScreen';
 import { useAuth } from './AuthContext';
 import Loading from './components/Loading';
-
+import { StartSessionScreen } from './screens/StartSessionScreen';
 const Stack = createNativeStackNavigator();
 
 export default function Router() {
@@ -23,6 +23,7 @@ export default function Router() {
         {currentUser ? (
           <>
             <Stack.Screen options={{ headerShown: false }} name='HomeScreen' component={HomeScreen} />
+            <Stack.Screen options={{ headerShown: false }} name='StartSessionScreen' component={StartSessionScreen} />
           </>
         ) : (
           <>
