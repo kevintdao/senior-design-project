@@ -67,7 +67,7 @@ export default function SignUpScreen() {
   if (registered) {
     return (
       <SafeAreaView style={tw`flex-1 items-center justify-center`}>
-        <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Registration Successful!</Text>
+        <Text style={tw`text-2xl font-bold text-gray-900 mb-5 text-center`}>Registration Successful!</Text>
         <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5`}>
           <TouchableOpacity
             onPress={() => navigation.navigate('LoginScreen')}

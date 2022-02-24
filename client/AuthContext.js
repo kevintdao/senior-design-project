@@ -33,6 +33,7 @@ export function AuthProvider({ children }){
   }
 
   useEffect(() => {
+    setLoading(true);
     loadStorageData();
     return () => {
       setLoading(false);

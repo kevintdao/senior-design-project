@@ -41,8 +41,8 @@ export default function LoginScreen() {
         type: "error",
         text: error.message
       });
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   if (loading) {
