@@ -38,6 +38,7 @@ SoftwareSerial ss(RXPin, TXPin);
 
 ////// Boat variables //////
 // boat state
+boolean ready = false;
 // boat speed
 // boat location (coordinates)
 // boat battery level
@@ -70,22 +71,18 @@ void loop() {
       // Wifi module -- send data variables e.g. location, current reading
             // check state -- session start/stop
             // 
-  //  Turn both motors clockwise and counter clockwise with 1s delay
-  analogWrite(motor1pin1, 255);
-  analogWrite(motor1pin2, 0);
-  delay(1000);
-
-  analogWrite(motor1pin1, 0);
-  analogWrite(motor1pin2, 255);
-  delay(1000);
-
-  analogWrite(motor2pin1, 255);
-  analogWrite(motor2pin2, 0);
-  delay(1000);
-
-  analogWrite(motor2pin1, 0);
-  analogWrite(motor2pin2, 255);
-  delay(1000);
+  
+  double targetLat = 0;//...get from user via post request ******* TODO ****
+  double targetLon = 0;//...get from user via post request
+  double currentLat = getCurrentLat();
+  double currentLon = getCurrentLon();
+  if (currentLat == 911 || currentLon == 911) {
+    ready = false; // prevents boat from moving until it has a valid GPS signal
+    // send message to app session page... GPS signal not found
+  }
+  double targetBear = getBearing(currentLat, currentLon, targetLat, targetLon);
+  
+  turnMotorTest(); // fatima's testing function for motors
   
 }
 
@@ -133,6 +130,30 @@ double getCurrentLon() {
   }
 }
 
+double getCurrentBear() {
+  return 0;
+  // insert magnetometer code here
+}
+
+void turnMotorTest() {
+  //  Turn both motors clockwise and counter clockwise with 1s delay
+  analogWrite(motor1pin1, 255);
+  analogWrite(motor1pin2, 0);
+  delay(1000);
+
+  analogWrite(motor1pin1, 0);
+  analogWrite(motor1pin2, 255);
+  delay(1000);
+
+  analogWrite(motor2pin1, 255);
+  analogWrite(motor2pin2, 0);
+  delay(1000);
+
+  analogWrite(motor2pin1, 0);
+  analogWrite(motor2pin2, 255);
+  delay(1000);
+}
+
 // check for objects in the way -- set offset of sensors (left and right, front)
 
 // correct direction for objects
@@ -142,5 +163,9 @@ double getCurrentLon() {
 // move backward (for after running into something)
 
 // turn to direction of travel
+void turnToBearing(double targetBear) {
+  double currentBear = getCurrentBear();
+  // turn until currentBear == targetBear
+}
 
 // send data
