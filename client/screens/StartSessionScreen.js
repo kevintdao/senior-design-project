@@ -3,7 +3,8 @@ import React from 'react';
 import tw from 'tailwind-react-native-classnames';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
+
 const StartSessionScreen = () => {
   const navigation = useNavigation();
   return (
@@ -22,7 +23,13 @@ const StartSessionScreen = () => {
           </TouchableOpacity>
         </View>
         <View>
-          <MapView style={styles.map} />
+          <MapView style={styles.map} >
+            <Marker 
+              key={1}
+              coordinate={{latitude: -34, longitude:151 }}
+              title="first"
+              description='first'/>
+          </MapView>
         </View>
     </SafeAreaView>
 
