@@ -52,7 +52,7 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView
       behavior='padding'
-      style={tw`flex-1 items-center`}
+      style={tw`flex-1 items-center bg-gray-100`}
     >
       <SafeAreaView style={tw`w-4/5`}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Login</Text>
@@ -79,7 +79,7 @@ export default function LoginScreen() {
         <TouchableOpacity
           onPress={handleLogin}
         >
-          <Text style={tw`text-center text-white`}>Login</Text>
+          <Text style={tw`text-center text-white font-bold`}>Login</Text>
         </TouchableOpacity>
       </View>
 
@@ -88,7 +88,7 @@ export default function LoginScreen() {
           style={tw``}
           onPress={() => navigation.navigate('SignUpScreen')}
         >
-          <Text style={tw`text-center text-white`}>Don't have an account?</Text>
+          <Text style={tw`text-center text-white font-bold`}>Don't have an account?</Text>
         </TouchableOpacity>
       </View>
       

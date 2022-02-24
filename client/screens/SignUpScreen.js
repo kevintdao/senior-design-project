@@ -82,7 +82,7 @@ export default function SignUpScreen() {
   return (
     <KeyboardAvoidingView
       behavior='padding'
-      style={tw`flex-1 items-center`}
+      style={tw`flex-1 items-center bg-gray-100`}
     >
       <SafeAreaView style={tw`w-4/5`}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Register</Text>
@@ -116,7 +116,7 @@ export default function SignUpScreen() {
         <TouchableOpacity
           onPress={handleSignup}
         >
-          <Text style={tw`text-center text-white`}>Signup</Text>
+          <Text style={tw`text-center text-white text-lg`}>Signup</Text>
         </TouchableOpacity>
       </View>
 
@@ -124,7 +124,7 @@ export default function SignUpScreen() {
         <TouchableOpacity
           onPress={() => navigation.navigate('LoginScreen')}
         >
-          <Text style={tw`text-center text-white`}>Already have an account?</Text>
+          <Text style={tw`text-center text-white text-lg`}>Already have an account?</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
