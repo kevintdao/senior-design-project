@@ -23,12 +23,15 @@ const StartSessionScreen = () => {
           </TouchableOpacity>
         </View>
         <View>
-          <MapView style={styles.map} >
-            <Marker 
-              key={1}
-              coordinate={{latitude: -34, longitude:151 }}
-              title="first"
-              description='first'/>
+          <MapView 
+            style={styles.map}
+            initialRegion={{
+              latitude: 41.65944687412238,
+              longitude: -91.53652901001102,
+              latitudeDelta: 0.09,
+              longitudeDelta: 0.04,
+            }}>
+           
           </MapView>
         </View>
     </SafeAreaView>
