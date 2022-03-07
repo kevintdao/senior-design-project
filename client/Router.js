@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import HomeScreen from './screens/HomeScreen';
+import StartSessionScreen from './screens/StartSessionScreen';
 import { useAuth } from './AuthContext';
 import Loading from './components/Loading';
 
@@ -23,6 +24,7 @@ export default function Router() {
         {currentUser ? (
           <>
             <Stack.Screen options={{ headerShown: false }} name='HomeScreen' component={HomeScreen} />
+            <Stack.Screen options={{ headerShown: false }} name='StartSessionScreen' component={StartSessionScreen} />
           </>
         ) : (
           <>

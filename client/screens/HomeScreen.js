@@ -18,7 +18,7 @@ const HomeScreen = ( ) => {
   }
 
   return (
-    <SafeAreaView style={tw`d-flex items-center bg-gray-100`}>
+    <SafeAreaView style={tw`flex-1 items-center bg-gray-100`}>
       <View style={tw`w-4/5 max-w-md`}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Home</Text>
         <Text style={tw`text-xl text-gray-900 mb-5 text-center`}>
@@ -28,7 +28,10 @@ const HomeScreen = ( ) => {
       
         <View style={tw`mt-5`}> 
           <View>
-            <TouchableOpacity style={tw`bg-green-600 mb-3 items-center rounded p-3`}>
+            <TouchableOpacity 
+              style={tw`bg-green-600 mb-3 items-center rounded p-3`}
+              onPress={() => navigation.navigate('StartSessionScreen')}
+            >
               <Text style={tw`text-white text-lg`}>Begin New Session</Text>
             </TouchableOpacity>
           </View>
