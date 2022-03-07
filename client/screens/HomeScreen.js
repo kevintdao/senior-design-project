@@ -36,7 +36,10 @@ const HomeScreen = ( ) => {
             </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity style={tw`bg-green-600 mb-3 items-center rounded p-3`}>
+            <TouchableOpacity 
+              style={tw`bg-green-600 mb-3 items-center rounded p-3`}
+              onPress={() => navigation.navigate("GraphScreen")}
+            >
               <Text style={tw`text-white text-lg`}>Data Viewing and Analysis</Text>
             </TouchableOpacity>
           </View>
