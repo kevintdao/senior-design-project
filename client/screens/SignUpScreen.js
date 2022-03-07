@@ -68,8 +68,9 @@ export default function SignUpScreen() {
     return (
       <SafeAreaView style={tw`flex-1 items-center justify-center`}>
         <Text style={tw`text-2xl font-bold text-gray-900 mb-5 text-center`}>Registration Successful!</Text>
-        <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
+        <View style={tw`w-4/5 max-w-md`}>
           <TouchableOpacity
+            style={tw`bg-green-600 rounded p-3 mb-3`}
             onPress={() => navigation.navigate('LoginScreen')}
           >
             <Text style={tw`text-center text-white`}>Login</Text>
@@ -113,16 +114,18 @@ export default function SignUpScreen() {
         />
       </SafeAreaView>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
+      <View style={tw`w-4/5 max-w-md`}>
         <TouchableOpacity
+          style={tw`bg-green-600 rounded p-3 mb-3`}
           onPress={handleSignup}
         >
           <Text style={tw`text-center text-white font-bold`}>Signup</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
+      <View style={tw`w-4/5 max-w-md`}>
         <TouchableOpacity
+          style={tw`bg-green-600 rounded p-3 mb-3`}
           onPress={() => navigation.navigate('LoginScreen')}
         >
           <Text style={tw`text-center text-white font-bold`}>Already have an account?</Text>
