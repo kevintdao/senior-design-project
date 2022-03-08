@@ -7,6 +7,10 @@ export default function Sessions(props) {
   const [value, setValue] = useState(null);
   const data = props.data;
 
+  const getData = async () => {
+    
+  }
+
   return (
     <View style={tw`items-center h-1/2`}>
       <View style={tw`w-4/5 max-w-md h-6/12 border border-gray-300 rounded-md`}>
@@ -39,7 +43,8 @@ export default function Sessions(props) {
 
       <View style={tw`w-4/5 max-w-md mt-3`}>
         <TouchableOpacity
-          style={tw`bg-blue-700 items-center rounded p-3 mb-3`}
+          style={tw`items-center rounded p-3 mb-3 ${value ? "bg-blue-700" : "bg-gray-300"}`}
+          disabled={!value}
         >
           <Text style={tw`text-white font-bold text-lg`}>Select</Text>
         </TouchableOpacity>

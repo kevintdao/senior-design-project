@@ -1,38 +1,46 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '../AuthContext'
 import MapView from 'react-native-maps'
 import { query, collection, getDocs } from '@firebase/firestore'
 import { db } from '../utils/firebase'
 import tw from 'twrnc'
 import Session from '../components/Sessions'
+import Loading from '../components/Loading'
 
 export default function GraphScreen() {
   const { currentUser } = useAuth();
+  const [sess, setSess] = useState();
+  const [loading, setLoading] = useState(true);
   const user = currentUser.user;
   const email = user.email;
 
-  const testData = {
-    'session_1': {
-      start: new Date()
-    },
-    'session_2': {
-      start: new Date()
-    },
-  }
-
   const getData = async () => {
-    const output = [];
+    const output = {};
     const q = query(collection(db, `users/${email}/sessions`));
 
-    // const docsSnap = await getDocs(q);
+    const docsSnap = await getDocs(q);
 
-    // docsSnap.forEach((doc) => {
-    //   console.log(doc.id);
-    // });
+    docsSnap.forEach((doc) => {
+      const start = doc.data().start.toDate();
+      output[doc.id] = {
+        "start": start
+      }
+    });
+    return output;
   } 
 
-  getData();
+  useEffect(() => {
+    setLoading(true);
+    getData().then(data => {
+      setSess(data);
+      setLoading(false);
+    })
+  }, [])
+
+  if (loading) {
+    return <Loading />
+  }
 
   return (
     <View>
@@ -48,7 +56,7 @@ export default function GraphScreen() {
 
       <Text style={tw`text-3xl font-bold text-gray-900 mt-1 mb-2 text-center`}>Sessions</Text>
 
-      <Session data={testData}/>
+      <Session data={sess}/>
     </View>
 
   )
