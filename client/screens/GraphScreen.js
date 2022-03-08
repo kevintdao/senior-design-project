@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../AuthContext'
 import MapView, { Marker } from 'react-native-maps'
 import { query, collection, getDocs } from '@firebase/firestore'
@@ -15,6 +15,7 @@ export default function GraphScreen() {
   const [loading, setLoading] = useState(true);
   const user = currentUser.user;
   const email = user.email;
+  const mapRef = useRef();
 
   const getSessions = async () => {
     const output = {};
@@ -48,9 +49,13 @@ export default function GraphScreen() {
           key={index}
           coordinate={{
             latitude: data.lat,
-            longitude: data.long
+            longitude: data.long,
           }}
-        />
+        >
+          <View style={tw`p-1 rounded-md bg-red-600`}>
+            <Text style={tw`font-bold text-white`}>{data.temperature}</Text>
+          </View>
+        </Marker>
       )
     })
     setMarkerList(array);
@@ -72,6 +77,7 @@ export default function GraphScreen() {
     <View>
       <MapView 
         style={styles.map} 
+        ref={mapRef}
         initialRegion={{
           latitude: 41.65944687412238,
           longitude: -91.53652901001102,
