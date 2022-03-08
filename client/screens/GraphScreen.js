@@ -15,7 +15,7 @@ export default function GraphScreen() {
   const user = currentUser.user;
   const email = user.email;
 
-  const getData = async () => {
+  const getSessions = async () => {
     const output = {};
     const q = query(collection(db, `users/${email}/sessions`));
 
@@ -32,11 +32,16 @@ export default function GraphScreen() {
 
   useEffect(() => {
     setLoading(true);
-    getData().then(data => {
+    getSessions().then(data => {
       setSess(data);
       setLoading(false);
     })
   }, [])
+
+  // get data based on selected session
+  const onSelect = (session) => {
+    console.log(session)
+  }
 
   if (loading) {
     return <Loading />
@@ -56,7 +61,7 @@ export default function GraphScreen() {
 
       <Text style={tw`text-3xl font-bold text-gray-900 mt-1 mb-2 text-center`}>Sessions</Text>
 
-      <Session data={sess}/>
+      <Session data={sess} onSelect={onSelect}/>
     </View>
 
   )

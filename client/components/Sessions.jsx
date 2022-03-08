@@ -6,10 +6,7 @@ import { Ionicons } from '@expo/vector-icons'
 export default function Sessions(props) {
   const [value, setValue] = useState(null);
   const data = props.data;
-
-  const getData = async () => {
-    
-  }
+  const onSelect = props.onSelect;
 
   return (
     <View style={tw`items-center h-1/2`}>
@@ -34,7 +31,6 @@ export default function Sessions(props) {
                     {value == data[item] && <Ionicons name="md-checkmark-circle" size={18} color="green"/>}
                   </View>
                 </TouchableOpacity>
-
               </View>
             )
           }}
@@ -45,6 +41,7 @@ export default function Sessions(props) {
         <TouchableOpacity
           style={tw`items-center rounded p-3 mb-3 ${value ? "bg-blue-700" : "bg-gray-300"}`}
           disabled={!value}
+          onPress={() => onSelect(value)}
         >
           <Text style={tw`text-white font-bold text-lg`}>Select</Text>
         </TouchableOpacity>
