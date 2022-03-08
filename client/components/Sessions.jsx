@@ -23,12 +23,12 @@ export default function Sessions(props) {
               <View style={tw`justify-between`}>
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  style={tw`bg-gray-400 border rounded p-2 m-2 ${value == data[item] ? "border-green-600" : "border-gray-300"}`}
-                  onPress={() => setValue(data[item])}         
+                  style={tw`bg-gray-400 border rounded p-2 m-2 ${value == item ? "border-green-600" : "border-gray-300"}`}
+                  onPress={() => setValue(item)}         
                 >
                   <View style={tw`flex-1 flex-row items-center justify-between`}>
                     <Text style={tw`text-lg mr-7`}>{`${date} ${time}`}</Text>
-                    {value == data[item] && <Ionicons name="md-checkmark-circle" size={18} color="green"/>}
+                    {value == item && <Ionicons name="md-checkmark-circle" size={18} color="green"/>}
                   </View>
                 </TouchableOpacity>
               </View>
