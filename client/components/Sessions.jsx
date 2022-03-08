@@ -1,6 +1,7 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import tw from 'twrnc'
+import { Ionicons } from '@expo/vector-icons'
 
 export default function Sessions(props) {
   const [value, setValue] = useState(null);
@@ -12,15 +13,24 @@ export default function Sessions(props) {
         <FlatList
           data={Object.keys(data)}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={(session) => {
+          renderItem={({ item }) => {
+            const start = data[item].start;
+            const date = `${start.getMonth() + 1}/${start.getDate()}/${start.getFullYear()}`;
+            const time = `${start.getHours()}:${start.getMinutes()}`;
+
             return (
-              <View style={tw``}>
+              <View style={tw`justify-between`}>
                 <TouchableOpacity
-                  style={tw`bg-green-800 items-center rounded p-3 m-2`}
-                  onPress={() => setValue(session.item)}         
+                  activeOpacity={0.7}
+                  style={tw`bg-gray-400 border rounded p-2 m-2 ${value == data[item] ? "border-green-600" : "border-gray-300"}`}
+                  onPress={() => setValue(data[item])}         
                 >
-                  <Text style={tw`text-white text-lg`}>{session.item}</Text>
+                  <View style={tw`flex-1 flex-row items-center justify-between`}>
+                    <Text style={tw`text-lg mr-7`}>{`${date} ${time}`}</Text>
+                    {value == data[item] && <Ionicons name="md-checkmark-circle" size={18} color="green"/>}
+                  </View>
                 </TouchableOpacity>
+
               </View>
             )
           }}

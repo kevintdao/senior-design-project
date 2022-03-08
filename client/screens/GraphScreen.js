@@ -19,15 +19,6 @@ export default function GraphScreen() {
     'session_2': {
       start: new Date()
     },
-    'session_3': {
-      start: new Date()
-    },
-    'session_4': {
-      start: new Date()
-    },
-    'session_5': {
-      start: new Date()
-    }
   }
 
   const getData = async () => {
