@@ -1,38 +1,61 @@
 import { View, Text, Dimensions } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import tw from 'twrnc'
-import { Svg, G, Line } from 'react-native-svg'
+import { LineChart } from 'react-native-chart-kit'
 
-const GRAPH_MARGIN = 20;
-const colors = {
-  axis: "#000000"
-}
+export default function LineGraph({ data }) {
+  const getData = (data) => {
+    const labels = [];
+    const datasets = [];
 
-export default function LineGraph() {
-  const SVGHeight = Dimensions.get('window').height / 2.5;
-  const SVGWidth = Dimensions.get('window').width * 0.85 - 15;
-  const graphHeight = SVGHeight - 2 * GRAPH_MARGIN;
-  const graphWidth = SVGWidth - 2 * GRAPH_MARGIN;
+    data.map((item, index) => {
+      labels.push(index + 1);
+      datasets.push(item.temperature);
+    })
 
-  // X scale point
+    return {
+      labels: labels,
+      datasets: datasets
+    }
+  }
 
-  // Y scale point
-
+  const graphData = getData(data);
+  const chartConfig = {
+    backgroundColor: "#f3f4f6",
+    backgroundGradientFrom: "#f3f4f6",
+    backgroundGradientTo: "#f3f4f6",
+    decimalPlaces: 2,
+    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    style: {
+      borderRadius: 10
+    },
+    propsForDots: {
+      r: "6",
+      strokeWidth: "2",
+      stroke: "#000000"
+    }
+  }
+  
   return (
     <View style={tw`px-2`}>
-      <Svg width={SVGWidth} height={SVGHeight} style={tw`bg-red-100`}>
-        <G y={graphHeight}>
-          {/* bottom axis */}
-          <Line 
-            x1="0"
-            y1="2"
-            x2={graphWidth}
-            y2="2"
-            stroke={colors.axis}
-            strokeWidth="0.5"
-          />
-        </G>
-      </Svg>
+      <LineChart
+        data={{
+          labels: graphData.labels,
+          datasets: [
+            {
+              data: graphData.datasets
+            }
+          ]
+        }}
+        width={Dimensions.get('window').width * 0.85 - 15}
+        height={(Dimensions.get('window').height / 2.5)}
+        yAxisLabel=""
+        yAxisSuffix=' C'
+        chartConfig={chartConfig}
+        bezier
+
+      />
     </View>
   )
 }
