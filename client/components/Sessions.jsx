@@ -9,8 +9,8 @@ export default function Sessions(props) {
   const onSelect = props.onSelect;
 
   return (
-    <View style={tw`items-center h-1/2`}>
-      <View style={tw`w-4/5 max-w-md h-6/12 border border-gray-300 rounded-md`}>
+    <View style={tw``}>
+      <View style={tw`border border-gray-300 rounded-md h-4/5`}>
         <FlatList
           data={Object.keys(data)}
           keyExtractor={(item, index) => index.toString()}
@@ -37,7 +37,7 @@ export default function Sessions(props) {
         />
       </View>
 
-      <View style={tw`w-4/5 max-w-md mt-3`}>
+      <View style={tw`mt-3`}>
         <TouchableOpacity
           style={tw`items-center rounded p-3 mb-3 ${value ? "bg-blue-700" : "bg-gray-300"}`}
           disabled={!value}

@@ -1,73 +1,32 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../AuthContext'
-import MapView, { Marker } from 'react-native-maps'
-import { query, collection, getDocs } from '@firebase/firestore'
-import { db } from '../utils/firebase'
-import tw from 'twrnc'
-import Session from '../components/Sessions'
 import Loading from '../components/Loading'
+import MapGraph from '../components/MapGraph'
 
 export default function GraphScreen() {
   const { currentUser } = useAuth();
-  const [sess, setSess] = useState();
-  const [markerList, setMarkerList] = useState([]);
-  const [loading, setLoading] = useState(true);
   const user = currentUser.user;
   const email = user.email;
   const mapRef = useRef();
 
-  const getSessions = async () => {
-    const output = {};
-    const q = query(collection(db, `users/${email}/sessions`));
-
-    const docsSnap = await getDocs(q);
-    docsSnap.forEach((doc) => {
-      const start = doc.data().start.toDate();
-      output[doc.id] = {
-        "start": start
-      }
-    });
-    return output;
-  } 
-
   // get data based on selected session
-  const onSelect = async (session) => {
-    const output = [];
-    const q = query(collection(db, `users/${email}/sessions/${session}/data`));
-
-    const docsSnap = await getDocs(q);
-    docsSnap.forEach((doc) => {
-      output.push(doc.data());
-    });
-    
     // add the markers
-    const array = [];
-    output.map((data, index) => {
-      array.push(
-        <Marker 
-          key={index}
-          coordinate={{
-            latitude: data.lat,
-            longitude: data.long,
-          }}
-        >
-          <View style={tw`p-1 rounded-md bg-red-600`}>
-            <Text style={tw`font-bold text-white`}>{data.temperature}</Text>
-          </View>
-        </Marker>
-      )
-    })
-    setMarkerList(array);
-  }
-
-  useEffect(() => {
-    setLoading(true);
-    getSessions().then(data => {
-      setSess(data);
-      setLoading(false);
-    })
-  }, [])
+    // output.map((data, index) => {
+    //   array.push(
+    //     <Marker 
+    //       key={index}
+    //       coordinate={{
+    //         latitude: data.lat,
+    //         longitude: data.long,
+    //       }}
+    //     >
+    //       <View style={tw`p-1 rounded-md bg-red-600`}>
+    //         <Text style={tw`font-bold text-white`}>{data.temperature}</Text>
+    //       </View>
+    //     </Marker>
+    //   )
+    // })
 
   if (loading) {
     return <Loading />
@@ -75,7 +34,8 @@ export default function GraphScreen() {
 
   return (
     <View>
-      <MapView 
+      {/* <MapView
+        provider="google"
         style={styles.map} 
         ref={mapRef}
         initialRegion={{
@@ -86,13 +46,11 @@ export default function GraphScreen() {
         }}
       >
       {markerList}
-      </MapView>
+      </MapView> */}
 
-      <Text style={tw`text-3xl font-bold text-gray-900 mt-1 mb-2 text-center`}>Sessions</Text>
+      <MapGraph markers={markerList} />
 
-      <Session data={sess} onSelect={onSelect}/>
     </View>
-
   )
 }
 
