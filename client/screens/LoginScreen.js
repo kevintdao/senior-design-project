@@ -1,5 +1,5 @@
 import { View, Text, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import tw from 'twrnc';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -75,17 +75,18 @@ export default function LoginScreen() {
         />
       </SafeAreaView>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
+      <View style={tw`w-4/5 max-w-md`}>
         <TouchableOpacity
+          style={tw`bg-green-600 rounded p-3 mb-3`}
           onPress={handleLogin}
         >
           <Text style={tw`text-center text-white font-bold`}>Login</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={tw`bg-indigo-700 rounded p-3 mb-3 w-4/5 max-w-md`}>
+      <View style={tw`w-4/5 max-w-md`}>
         <TouchableOpacity 
-          style={tw``}
+          style={tw`bg-green-600 rounded p-3 mb-3`}
           onPress={() => navigation.navigate('SignUpScreen')}
         >
           <Text style={tw`text-center text-white font-bold`}>Don't have an account?</Text>
