@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-nati
 import React, { useState } from 'react'
 import tw from 'twrnc'
 import { useNavigation } from '@react-navigation/native'
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Callout, Marker } from 'react-native-maps'
 
 const StartSessionScreen = () => {
   const navigation = useNavigation();
@@ -47,6 +47,15 @@ const StartSessionScreen = () => {
           pinColor='blue'
           coordinate={start}
         >
+          <Callout tooltip>
+            <View>
+              <View style={styles.bubble}>
+                <Text style={styles.name}>Start Location</Text>
+              </View>
+              <View style={styles.arrowBorder} />
+              <View style={styles.arrow} />
+            </View>
+          </Callout>
         </Marker>}
 
         {/* end marker */}
@@ -55,6 +64,15 @@ const StartSessionScreen = () => {
           pinColor='red'
           coordinate={end}
         >
+          <Callout tooltip>
+            <View>
+              <View style={styles.bubble}>
+                <Text style={styles.name}>End Location</Text>
+              </View>
+              <View style={styles.arrowBorder} />
+              <View style={styles.arrow} />
+            </View>
+          </Callout>
         </Marker>}
       </MapView>
       <View>
@@ -102,6 +120,35 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height / 2,
   },
+  bubble: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    borderColor: '#ccc',
+    borderWidth: 0.5,
+    padding: 15,
+  },
+  name: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  arrow: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    borderTopColor: '#fff',
+    borderWidth: 16,
+    alignSelf: 'center',
+    marginTop: -32,
+  },
+  arrowBorder: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    borderTopColor: '#007a87',
+    borderWidth: 16,
+    alignSelf: 'center',
+    marginTop: -0.5,
+  }
 });
 
 
