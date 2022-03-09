@@ -2,6 +2,7 @@ import { View, Text, FlatList, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import tw from 'twrnc'
 import { Ionicons } from '@expo/vector-icons'
+import { formatTime } from '../utils/time';
 
 export default function Sessions(props) {
   const [value, setValue] = useState(null);
@@ -17,7 +18,7 @@ export default function Sessions(props) {
           renderItem={({ item }) => {
             const start = data[item].start;
             const date = `${start.getMonth() + 1}/${start.getDate()}/${start.getFullYear()}`;
-            const time = `${start.getHours()}:${start.getMinutes()}`;
+            const time = formatTime(start.getHours(), start.getMinutes());
 
             return (
               <View style={tw`justify-between`}>
