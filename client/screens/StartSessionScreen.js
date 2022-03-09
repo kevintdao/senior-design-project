@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import tw from 'twrnc'
 import { useNavigation } from '@react-navigation/native'
 import MapView, { Marker } from 'react-native-maps'
-import Alert from '../components/Alert'
+import { Ionicons } from '@expo/vector-icons'
 
 const StartSessionScreen = () => {
   const navigation = useNavigation();
@@ -64,24 +64,24 @@ const StartSessionScreen = () => {
 
       <View style={tw`w-4/5 max-w-md`}> 
         <TouchableOpacity 
-          style={tw`bg-green-600 mt-3 items-center rounded-md p-3`}
+          style={tw`mt-3 items-center border border-green-600 rounded-md p-3 ${value == 'start' ? "bg-gray-300" : "bg-green-600"}`}
           onPress={() => placeMarker('start')}
         >
-          <Text style={tw`text-white`}>Place Start Marker</Text>
+          <Text style={tw`text-white text-lg`}>Place Start Marker</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={tw`bg-green-600 mt-3 items-center rounded-md p-3`}
+          style={tw`mt-3 items-center border border-green-600 rounded-md p-3 ${value == 'end' ? "bg-gray-300" : "bg-green-600"}`}
           onPress={() => placeMarker('end')}
         >
-          <Text style={tw`text-white`}>Place End Marker</Text>
+          <Text style={tw`text-white text-lg`}>Place End Marker</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
           style={tw`mt-3 items-center rounded-md p-3 ${start && end ? "bg-blue-700" : "bg-gray-300"}`}
           disabled={!start && !end}
         >
-          <Text style={tw`text-white`}>Begin New Session</Text>
+          <Text style={tw`text-white text-lg font-bold`}>Begin New Session</Text>
         </TouchableOpacity>
       </View>
     </View>
