@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import tw from 'twrnc'
 import { useNavigation } from '@react-navigation/native'
 import MapView, { Marker } from 'react-native-maps'
-import { Ionicons } from '@expo/vector-icons'
 
 const StartSessionScreen = () => {
   const navigation = useNavigation();
@@ -80,6 +79,10 @@ const StartSessionScreen = () => {
         <TouchableOpacity 
           style={tw`mt-3 items-center rounded-md p-3 ${start && end ? "bg-blue-700" : "bg-gray-300"}`}
           disabled={!start && !end}
+          onPress={() => navigation.navigate("NewSessionScreen", { 
+            start: start,
+            end: end, 
+          })}
         >
           <Text style={tw`text-white text-lg font-bold`}>Begin New Session</Text>
         </TouchableOpacity>
