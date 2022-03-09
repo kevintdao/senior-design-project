@@ -1,31 +1,90 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import React from 'react';
-import tw from 'twrnc';
-import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView from 'react-native-maps';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
+import React, { useState } from 'react'
+import tw from 'twrnc'
+import { useNavigation } from '@react-navigation/native'
+import MapView, { Marker } from 'react-native-maps'
+import Alert from '../components/Alert'
+
 const StartSessionScreen = () => {
   const navigation = useNavigation();
-  return (
-    <SafeAreaView style={tw`flex-1 items-center bg-blue-200`}>
-        <View>
-          <Text style={tw`text-black`}>Session</Text>
-        </View>
-        <View style={tw`bg-green-600 mt-3 items-center rounded-md p-2`}> 
-          <TouchableOpacity>
-            <Text style={tw`text-white`}>Begin New Session</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
-            <Text>Home</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <MapView style={styles.map} />
-        </View>
-    </SafeAreaView>
 
+  const [value, setValue] = useState();
+  const [start, setStart] = useState();
+  const [end, setEnd] = useState();
+
+  const placeMarker = (type) => {
+    setValue(type);
+  }
+
+  const mapOnPress = (e) => {
+    const coordinate = e.nativeEvent.coordinate;
+    if(value == 'start'){
+      setStart(coordinate);
+    }
+
+    else if(value == 'end'){
+      setEnd(coordinate);
+    }
+
+    setValue("");
+  }
+
+  return (
+    <View style={tw`flex-1 items-center bg-gray-100`}>
+      <MapView 
+        provider="google"
+        style={styles.map} 
+        initialRegion={{
+          latitude: 41.65944687412238,
+          longitude: -91.53652901001102,
+          latitudeDelta: 0.09,
+          longitudeDelta: 0.04,
+        }}
+        onPress={(e) => mapOnPress(e)}
+      >
+        {/* start marker */}
+        {start && <Marker
+          key='start'
+          pinColor='blue'
+          coordinate={start}
+        >
+        </Marker>}
+
+        {/* end marker */}
+        {end && <Marker
+          key='end'
+          pinColor='red'
+          coordinate={end}
+        >
+        </Marker>}
+      </MapView>
+      <View>
+        <Text style={tw`text-3xl font-bold`}>New Session</Text>
+      </View>
+
+      <View style={tw`w-4/5 max-w-md`}> 
+        <TouchableOpacity 
+          style={tw`bg-green-600 mt-3 items-center rounded-md p-3`}
+          onPress={() => placeMarker('start')}
+        >
+          <Text style={tw`text-white`}>Place Start Marker</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={tw`bg-green-600 mt-3 items-center rounded-md p-3`}
+          onPress={() => placeMarker('end')}
+        >
+          <Text style={tw`text-white`}>Place End Marker</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={tw`mt-3 items-center rounded-md p-3 ${start && end ? "bg-blue-700" : "bg-gray-300"}`}
+          disabled={!start && !end}
+        >
+          <Text style={tw`text-white`}>Begin New Session</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   )
 }
 
@@ -38,7 +97,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    height: Dimensions.get('window').height / 2,
   },
 });
 
