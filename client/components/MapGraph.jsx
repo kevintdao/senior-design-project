@@ -9,7 +9,8 @@ export default function MapGraph(props) {
   const mapRef = useRef();
 
   useEffect(() => {
-    console.log(markers);
+    
+
     if(mapRef.current){
       // mapRef.current.fitToSuppliedMarkers(markers);
     }
@@ -28,7 +29,7 @@ export default function MapGraph(props) {
           longitudeDelta: 0.04,
         }}
       >
-        {/* {markers.map((data, index) => {
+        {markers.map((data, index) => {
           <Marker
             key={index}
             coordinate={{
@@ -40,9 +41,6 @@ export default function MapGraph(props) {
               <Text style={tw`font-bold text-white`}>{data.temperature}</Text>
             </View>
           </Marker>
-        })} */}
-        {markers.map((data, index) => {
-          <Text>{data.temperature}</Text>
         })}
       </MapView>
     </View>

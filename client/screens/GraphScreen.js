@@ -1,14 +1,13 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { useAuth } from '../AuthContext'
+import { useNavigation } from '@react-navigation/native'
 import Loading from '../components/Loading'
 import MapGraph from '../components/MapGraph'
+import tw from 'twrnc'
 
-export default function GraphScreen() {
-  const { currentUser } = useAuth();
-  const user = currentUser.user;
-  const email = user.email;
-  const mapRef = useRef();
+export default function GraphScreen(props) {
+  const navigation = useNavigation();
+  const data = props.route.params.session_data;
 
   // get data based on selected session
     // add the markers
@@ -28,9 +27,9 @@ export default function GraphScreen() {
     //   )
     // })
 
-  if (loading) {
-    return <Loading />
-  }
+  // if (loading) {
+  //   return <Loading />
+  // }
 
   return (
     <View>
@@ -44,12 +43,13 @@ export default function GraphScreen() {
           latitudeDelta: 0.09,
           longitudeDelta: 0.04,
         }}
-      >
-      {markerList}
-      </MapView> */}
+      > */}
+      {/* {markerList} */}
+      {/* </MapView> */}
 
-      <MapGraph markers={markerList} />
 
+      <MapGraph markers={data}/>
+      <Text style={tw`text-3xl font-bold text-gray-900 mt-1 mb-2 text-center`}>Graph</Text>
     </View>
   )
 }

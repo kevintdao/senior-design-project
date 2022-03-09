@@ -2,6 +2,7 @@ import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../AuthContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useNavigation } from '@react-navigation/native'
 import { query, collection, getDocs } from '@firebase/firestore'
 import { db } from '../utils/firebase'
 import tw from 'twrnc'
@@ -9,6 +10,7 @@ import Sessions from '../components/Sessions'
 import Loading from '../components/Loading'
 
 export default function SessionSelectScreen() {
+  const navigation = useNavigation();
   const { currentUser } = useAuth();
   const [sess, setSess] = useState();
   const [loading, setLoading] = useState(true);
@@ -37,6 +39,8 @@ export default function SessionSelectScreen() {
     docsSnap.forEach((doc) => {
       output.push(doc.data());
     });
+
+    navigation.navigate('GraphScreen', { session_data: output });
   }
 
   useEffect(() => {
@@ -58,7 +62,6 @@ export default function SessionSelectScreen() {
 
         <Sessions data={sess} onSelect={onSelect}/>
       </View>
-
     </SafeAreaView>
   )
 }
