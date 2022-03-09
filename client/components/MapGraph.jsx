@@ -10,10 +10,10 @@ export default function MapGraph(props) {
   const markers = [];
 
   useEffect(() => {
-    data.map(marker => {
+    data.map(item => {
       markers.push({
-        latitude: marker.lat,
-        longitude: marker.long
+        latitude: item.lat,
+        longitude: item.long
       })
     })
   }, [])

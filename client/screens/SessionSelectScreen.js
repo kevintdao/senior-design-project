@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '../AuthContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
-import { query, collection, getDocs } from '@firebase/firestore'
+import { query, collection, getDocs, orderBy } from '@firebase/firestore'
 import { db } from '../utils/firebase'
 import tw from 'twrnc'
 import Sessions from '../components/Sessions'
@@ -33,7 +33,7 @@ export default function SessionSelectScreen() {
 
   const onSelect = async (session) => {
     const output = [];
-    const q = query(collection(db, `users/${email}/sessions/${session}/data`));
+    const q = query(collection(db, `users/${email}/sessions/${session}/data`), orderBy("time"));
 
     const docsSnap = await getDocs(q);
     docsSnap.forEach((doc) => {
