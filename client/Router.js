@@ -7,6 +7,7 @@ import HomeScreen from './screens/HomeScreen';
 import StartSessionScreen from './screens/StartSessionScreen';
 import SessionSelectScreen from './screens/SessionSelectScreen';
 import GraphScreen from './screens/GraphScreen';
+import NewSessionScreen from './screens/NewSessionScreen';
 import { useAuth } from './AuthContext';
 import Loading from './components/Loading';
 
@@ -26,6 +27,7 @@ export default function Router() {
           <>
             <Stack.Screen options={{ headerShown: false }} name='HomeScreen' component={HomeScreen} />
             <Stack.Screen options={{ headerShown: false }} name='StartSessionScreen' component={StartSessionScreen} />
+            <Stack.Screen options={{ headerShown: false }} name='NewSessionScreen' component={NewSessionScreen} />
             <Stack.Screen options={{ headerShown: false }} name='SessionSelectScreen' component={SessionSelectScreen} />
             <Stack.Screen options={{ headerShown: false }} name='GraphScreen' component={GraphScreen} />
           </>
