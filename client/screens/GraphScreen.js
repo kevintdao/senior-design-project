@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import MapGraph from '../components/MapGraph'
 import tw from 'twrnc'
 import DataList from '../components/DataList'
+import LineGraph from '../components/LineGraph'
 import PagerView from 'react-native-pager-view'
 
 export default function GraphScreen(props) {
@@ -18,7 +19,7 @@ export default function GraphScreen(props) {
         </View>
         <View key="1">
           <Text style={tw`text-3xl font-bold text-gray-900 mt-1 mb-2 text-center`}>Graph</Text>
-          <Text>Page 1</Text>
+          <LineGraph data={data}/>
         </View>
       </PagerView>
     </View>

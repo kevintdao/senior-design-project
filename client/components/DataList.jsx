@@ -8,7 +8,7 @@ export default function DataList(props) {
   const data = props.data;
 
   return (
-    <View>
+    <View style={tw`px-2`}>
       <DataTable>
         <DataTable.Header>
           <DataTable.Title>Marker</DataTable.Title>
