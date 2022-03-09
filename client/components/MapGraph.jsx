@@ -4,17 +4,19 @@ import MapView, { Marker } from 'react-native-maps'
 import tw from 'twrnc'
 
 export default function MapGraph(props) {
-  const markers = props.markers;
+  const data = props.data;
   const [markerList, setMarkerList] = useState([]);
   const mapRef = useRef();
+  const markers = [];
 
   useEffect(() => {
-    
-
-    if(mapRef.current){
-      // mapRef.current.fitToSuppliedMarkers(markers);
-    }
-  }, [markers])
+    data.map(marker => {
+      markers.push({
+        latitude: marker.lat,
+        longitude: marker.long
+      })
+    })
+  }, [])
 
   return (
     <View>
@@ -29,19 +31,19 @@ export default function MapGraph(props) {
           longitudeDelta: 0.04,
         }}
       >
-        {markers.map((data, index) => {
+        {data.map((marker, index) => (
           <Marker
             key={index}
             coordinate={{
-              latitude: data.lat,
-              longitude: data.long,
+              latitude: marker.lat,
+              longitude: marker.long,
             }}
           >
             <View style={tw`p-1 rounded-md bg-red-600`}>
-              <Text style={tw`font-bold text-white`}>{data.temperature}</Text>
+              <Text style={tw`font-bold text-white`}>{index+1}</Text>
             </View>
           </Marker>
-        })}
+        ))}
       </MapView>
     </View>
   )
