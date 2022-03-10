@@ -10,7 +10,7 @@ import GraphScreen from './screens/GraphScreen';
 import NewSessionScreen from './screens/NewSessionScreen';
 import { useAuth } from './AuthContext';
 import Loading from './components/Loading';
-import { StartSessionScreen } from './screens/StartSessionScreen';
+
 const Stack = createNativeStackNavigator();
 
 export default function Router() {
