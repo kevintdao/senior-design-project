@@ -7,16 +7,10 @@ import { useAuth } from '../AuthContext';
 
 const HomeScreen = ( ) => {
   const navigation = useNavigation();
-  const { currentUser, logout } = useAuth();
+  const { currentUser } = useAuth();
   const user = currentUser.user;
   const email = user.email;
   
-  const handleLogout = async () => {
-    await logout().then(() =>{
-      navigation.navigate('LoginScreen');
-    });
-  }
-
   return (
     <SafeAreaView style={tw`flex-1 items-center bg-gray-100 mt-2`}>
       <View style={tw`w-4/5 max-w-md`}>
@@ -46,14 +40,6 @@ const HomeScreen = ( ) => {
             <View >
               <TouchableOpacity style={tw`bg-green-800 items-center rounded p-3 mb-3`}>
                 <Text style={tw`text-white text-lg`}>Help</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View>
-              <TouchableOpacity style={tw`bg-green-800 items-center rounded p-3 mb-2`}
-                onPress={handleLogout}
-              >
-                <Text style={tw`text-white text-lg`}>Logout</Text>
               </TouchableOpacity>
             </View>
           </View>

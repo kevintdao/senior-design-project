@@ -58,7 +58,7 @@ export default function SessionSelectScreen() {
   return (
     <SafeAreaView style={tw`flex-1 items-center bg-gray-100 mt-2`}>
       <View style={tw`w-4/5 max-w-md`}>
-        <Text style={tw`text-3xl font-bold text-gray-900 mt-1 mb-2 text-center`}>Sessions</Text>
+        <Text style={tw`text-3xl font-bold text-gray-900 mb-2 text-center`}>Sessions</Text>
 
         <Sessions data={sess} onSelect={onSelect}/>
       </View>
