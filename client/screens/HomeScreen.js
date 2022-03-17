@@ -36,14 +36,6 @@ const HomeScreen = ( ) => {
             </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity 
-              style={tw`bg-green-600 mb-3 items-center rounded p-3`}
-              onPress={() => navigation.navigate("SessionSelectScreen")}
-            >
-              <Text style={tw`text-white text-lg`}>Data Viewing and Analysis</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
             <TouchableOpacity style={tw`bg-green-600 mb-3 items-center rounded p-3`}>
               <Text style={tw`text-white text-lg`}>Sensor Testing</Text>
             </TouchableOpacity>
@@ -51,11 +43,6 @@ const HomeScreen = ( ) => {
 
 
           <View style={tw`mt-6`}>
-            <View>
-              <TouchableOpacity style={tw`bg-green-800 items-center rounded p-3 mb-3`}>
-                <Text style={tw`text-white text-lg`}>Settings</Text>
-              </TouchableOpacity>
-            </View>
             <View >
               <TouchableOpacity style={tw`bg-green-800 items-center rounded p-3 mb-3`}>
                 <Text style={tw`text-white text-lg`}>Help</Text>
