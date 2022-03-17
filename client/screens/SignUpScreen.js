@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import { useNavigation } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
 import Loading from '../components/Loading';
 import Alert from '../components/Alert';
 import { useAuth } from '../AuthContext';
@@ -83,54 +84,69 @@ export default function SignUpScreen() {
   return (
     <KeyboardAvoidingView
       behavior='padding'
-      style={tw`flex-1 items-center bg-gray-100`}
+      style={tw`flex-1 items-center bg-gray-100 mt-2`}
     >
       <SafeAreaView style={tw`w-4/5 max-w-md mb-4`}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5 text-center`}>Register</Text>
 
         {Object.keys(alert).length === 0 ? undefined : <Alert type={alert.type} text={alert.text}/>}
 
-        <TextInput
-          style={tw`bg-white rounded p-3 my-1 border border-gray-300`}
-          placeholder='Email'
-          value={email}
-          onChangeText={text => setEmail(text)}
-        />
+        <View style={tw`flex-row border-gray-300 border bg-white rounded mb-3`}>
+          <View style={tw`justify-center items-center border-r border-gray-300 w-1/8`}>
+            <AntDesign name='user' size={22} />
+          </View>
+          <TextInput
+            style={tw`p-4 w-7/8`}
+            placeholder='Email'
+            value={email}
+            onChangeText={text => setEmail(text)}
+          />
+        </View>
         
-        <TextInput
-          style={tw`bg-white rounded p-3 my-1 border border-gray-300`}
-          placeholder='Password'
-          secureTextEntry
-          value={password}
-          onChangeText={text => setPassword(text)}
-        />
+        <View style={tw`flex-row border-gray-300 border bg-white rounded mb-3`}>
+          <View style={tw`justify-center items-center border-r border-gray-300 w-1/8`}>
+            <AntDesign name='lock' size={22}/>
+          </View>
+          <TextInput
+            style={tw`p-4 w-7/8`}
+            placeholder='Password'
+            secureTextEntry
+            value={password}
+            onChangeText={text => setPassword(text)}
+          />
+        </View> 
 
-        <TextInput
-          style={tw`bg-white rounded p-3 my-1 border border-gray-300`}
-          placeholder='Cofirm Password'
-          secureTextEntry
-          value={passwordConf}
-          onChangeText={text => setPasswordConf(text)}
-        />
-      </SafeAreaView>
+        <View style={tw`flex-row border-gray-300 border bg-white rounded mb-4`}>
+          <View style={tw`justify-center items-center border-r border-gray-300 w-1/8`}>
+            <AntDesign name='lock' size={22}/>
+          </View>
+          <TextInput
+            style={tw`p-4 w-7/8`}
+            placeholder='Confirm Password'
+            secureTextEntry
+            value={passwordConf}
+            onChangeText={text => setPasswordConf(text)}
+          />
+        </View>
 
-      <View style={tw`w-4/5 max-w-md`}>
-        <TouchableOpacity
-          style={tw`bg-green-600 rounded p-3 mb-3`}
-          onPress={handleSignup}
-        >
-          <Text style={tw`text-center text-white font-bold`}>Signup</Text>
-        </TouchableOpacity>
-      </View>
+        <View>
+          <TouchableOpacity
+            style={tw`bg-green-600 rounded p-4 mb-3`}
+            onPress={handleSignup}
+          >
+            <Text style={tw`text-center text-white font-bold`}>Signup</Text>
+          </TouchableOpacity>
+        </View>
 
-      <View style={tw`w-4/5 max-w-md`}>
-        <TouchableOpacity
-          style={tw`bg-green-600 rounded p-3 mb-3`}
-          onPress={() => navigation.navigate('LoginScreen')}
-        >
-          <Text style={tw`text-center text-white font-bold`}>Already have an account?</Text>
-        </TouchableOpacity>
-      </View>
+        <View>
+          <TouchableOpacity
+            style={tw`bg-green-600 rounded p-4 mb-3`}
+            onPress={() => navigation.navigate('LoginScreen')}
+          >
+            <Text style={tw`text-center text-white font-bold`}>Already have an account?</Text>
+          </TouchableOpacity>
+        </View>
+        </SafeAreaView>
     </KeyboardAvoidingView>
   );
 }

@@ -75,7 +75,7 @@ const StartSessionScreen = () => {
           </Callout>
         </Marker>}
       </MapView>
-      <View>
+      <View style={tw`mt-2`}>
         <Text style={tw`text-3xl font-bold`}>New Session</Text>
       </View>
 
