@@ -69,6 +69,8 @@ export default function LoginScreen() {
             placeholder='Email'
             value={email}
             onChangeText={text => setEmail(text)}
+            autoCapitalize='none'
+            autoCorrect={false}
           />
         </View>
 

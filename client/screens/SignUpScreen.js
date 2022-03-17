@@ -100,6 +100,8 @@ export default function SignUpScreen() {
             placeholder='Email'
             value={email}
             onChangeText={text => setEmail(text)}
+            autoCapitalize='none'
+            autoCorrect={false}
           />
         </View>
         
