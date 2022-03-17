@@ -22,17 +22,13 @@ export default function LastMeasurement({ data }) {
   return (
     <View>
       <View>
-        <Text style={tw`text-xl text-gray-900 mb-5`}>
+        <Text style={tw`text-xl text-gray-900 mb-3`}>
           <Text style={tw`font-bold`}>Start: </Text>
           <Text>{`${date} ${time}`}</Text>
         </Text>
-        <Text style={tw`text-xl text-gray-900 mb-5`}>
+        <Text style={tw`text-xl text-gray-900 mb-3`}>
           <Text style={tw`font-bold`}>Duration: </Text>
           <Text>{duration}</Text>
-        </Text>
-        <Text style={tw`text-xl text-gray-900 mb-5`}>
-          <Text style={tw`font-bold`}>Average: </Text>
-          <Text>{}</Text>
         </Text>
       </View>
     </View>

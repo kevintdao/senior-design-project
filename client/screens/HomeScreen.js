@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { query, collection, getDocs, orderBy, limit } from '@firebase/firestore'
 import { db } from '../utils/firebase'
@@ -9,8 +8,7 @@ import { useAuth } from '../AuthContext';
 import LastMeasurement from '../components/LastMeasurement';
 import Loading from '../components/Loading';
 
-export default function HomeScreen () {
-  const navigation = useNavigation();
+export default function HomeScreen ({ navigation }) {
   const { currentUser } = useAuth();
   const [sess, setSess] = useState();
   const [loading, setLoading] = useState(true);
@@ -35,11 +33,15 @@ export default function HomeScreen () {
 
   useEffect(() => {
     setLoading(true);
-    getLastSession().then(data => {
-      setSess(data);
-      setLoading(false);
-    })
-  }, [])
+    const unsubscibe = navigation.addListener('focus', () => {
+      getLastSession().then(data => {
+        setSess(data);
+        setLoading(false);
+      })
+    });
+
+    return unsubscibe;
+  }, [navigation])
 
   if (loading) {
     return <Loading />

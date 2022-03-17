@@ -2,14 +2,12 @@ import { View, Text, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'r
 import React, { useState } from 'react';
 import tw from 'twrnc';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { useAuth } from '../AuthContext';
 import Loading from '../components/Loading';
 import Alert from '../components/Alert';
 
-export default function LoginScreen() {
-  const navigation = useNavigation();
+export default function LoginScreen ({ navigation}) {
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({});

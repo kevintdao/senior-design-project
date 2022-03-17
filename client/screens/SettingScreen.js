@@ -1,13 +1,11 @@
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
 import { useAuth } from '../AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function SettingScreen() {
-  const navigation = useNavigation();
+export default function SettingScreen({ navigation }) {
   const { logout } = useAuth();
 
   const handleLogout = async () => {

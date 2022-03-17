@@ -2,15 +2,13 @@ import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../AuthContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useNavigation } from '@react-navigation/native'
 import { query, collection, getDocs, orderBy } from '@firebase/firestore'
 import { db } from '../utils/firebase'
 import tw from 'twrnc'
 import Sessions from '../components/Sessions'
 import Loading from '../components/Loading'
 
-export default function SessionSelectScreen() {
-  const navigation = useNavigation();
+export default function SessionSelectScreen({ navigation }) {
   const { currentUser } = useAuth();
   const [sess, setSess] = useState();
   const [loading, setLoading] = useState(true);
@@ -45,11 +43,15 @@ export default function SessionSelectScreen() {
 
   useEffect(() => {
     setLoading(true);
-    getSessions().then(data => {
-      setSess(data);
-      setLoading(false);
-    })
-  }, [])
+    const unsubscribe = navigation.addListener('focus', () => {
+      getSessions().then(data => {
+        setSess(data);
+        setLoading(false);
+      })
+    });
+
+    return unsubscribe;
+  }, [navigation])
 
   if (loading) {
     return <Loading />

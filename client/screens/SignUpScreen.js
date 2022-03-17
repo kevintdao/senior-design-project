@@ -2,14 +2,12 @@ import { View, Text, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'r
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
-import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import Loading from '../components/Loading';
 import Alert from '../components/Alert';
 import { useAuth } from '../AuthContext';
 
-export default function SignUpScreen() {
-  const navigation = useNavigation();
+export default function SignUpScreen ({ navigation }) {
   const { signup } = useAuth();
 
   const [email, setEmail] = useState('');
