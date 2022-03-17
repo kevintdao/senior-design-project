@@ -11,7 +11,7 @@ export default function Sessions(props) {
 
   return (
     <View style={tw``}>
-      <View style={styles.container}>
+      <View style={tw`h-4/5`}>
         <FlatList
           data={Object.keys(data)}
           keyExtractor={(item, index) => index.toString()}
@@ -50,9 +50,3 @@ export default function Sessions(props) {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    height: Dimensions.get('window').height / 1.42,
-  }
-})

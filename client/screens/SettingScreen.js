@@ -21,8 +21,8 @@ export default function SettingScreen() {
       <View style={tw.style(`w-4/5 max-w-md`, styles.container)}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5`}>Settings</Text>
 
-        <View style={tw.style(`max-w-md`, styles.container)}>
-          <View style={tw`absolute bottom-0 w-full`}>
+        <View>
+          <View>
             <TouchableOpacity style={tw.style(`bg-green-800 items-center rounded p-3 mb-2 flex-row`)}
               onPress={handleLogout}
             >
@@ -42,6 +42,6 @@ export default function SettingScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    height: Dimensions.get('window').height / 1.3,
+    height: Dimensions.get('window').height - 25,
   }
 })

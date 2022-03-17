@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { query, collection, getDocs, orderBy, limit } from '@firebase/firestore'
@@ -47,7 +47,7 @@ export default function HomeScreen () {
 
   return (
     <SafeAreaView style={tw`flex-1 items-center bg-gray-100 mt-2`}>
-      <View style={tw.style(`w-4/5 max-w-md`, styles.container)}>
+      <View style={tw.style(`w-4/5 max-w-md`)}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-5`}>Home</Text>
         <Text style={tw`text-xl text-gray-900 mb-5`}>
           <Text style={tw`font-bold`}>Logged in as: </Text>
@@ -74,21 +74,13 @@ export default function HomeScreen () {
             </TouchableOpacity>
           </View>
 
-          <View style={tw.style(`max-w-md`, styles.container)}>
-            <View style={tw`absolute bottom-0 w-full`}>
-              <TouchableOpacity style={tw`bg-green-800 items-center rounded p-3 mb-3`}>
-                <Text style={tw`text-white text-lg`}>Help</Text>
-              </TouchableOpacity>
-            </View>
+          <View>
+            <TouchableOpacity style={tw`bg-green-800 items-center rounded p-3 mb-3`}>
+              <Text style={tw`text-white text-lg`}>Help</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
     </SafeAreaView>
-    );
-  }
-  
-const styles = StyleSheet.create({
-  container: {
-    height: Dimensions.get('window').height / 3.3,
-  }
-})
+  );
+}

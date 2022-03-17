@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../AuthContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -57,7 +57,7 @@ export default function SessionSelectScreen() {
 
   return (
     <SafeAreaView style={tw`flex-1 items-center bg-gray-100 mt-2`}>
-      <View style={tw`w-4/5 max-w-md`}>
+      <View style={tw.style(`w-4/5 max-w-md`, styles.container)}>
         <Text style={tw`text-3xl font-bold text-gray-900 mb-2`}>Sessions</Text>
 
         <Sessions data={sess} onSelect={onSelect}/>
@@ -65,3 +65,9 @@ export default function SessionSelectScreen() {
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: Dimensions.get('window').height - 25,
+  }
+})
