@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import MapGraph from '../components/MapGraph'
 import tw from 'twrnc'
 import DataList from '../components/DataList'
@@ -12,7 +12,7 @@ export default function GraphScreen(props) {
   return (
     <View style={tw`flex-1 items-center`}>
       <MapGraph data={data}/>
-      <PagerView initialPage={0} style={styles.pager} showPageIndicator={true} styles={styles.pager}>
+      <PagerView initialPage={0} style={styles.pager}>
         <View key="0">
           <Text style={tw`text-3xl font-bold text-gray-900 mt-1 mb-2 text-center`}>Data</Text>
           <DataList data={data}/>
@@ -27,16 +27,9 @@ export default function GraphScreen(props) {
 }
 
 const styles = StyleSheet.create({
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height / 2,
-  },
   pager: {
     width: Dimensions.get('window').width * 0.85,
     height: (Dimensions.get('window').height / 2) - 30,
-    marginTop: 10,
-    borderRadius: 5,
-    borderColor: "#d1d3db",
-    borderWidth: 1,
+    marginTop: 10
   }
 })

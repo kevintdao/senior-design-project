@@ -1,12 +1,9 @@
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
 import React, { useState } from 'react'
 import tw from 'twrnc'
-import { useNavigation } from '@react-navigation/native'
 import MapView, { Callout, Marker } from 'react-native-maps'
 
-const StartSessionScreen = () => {
-  const navigation = useNavigation();
-
+export default function StartSessionScreen ({ navigation }) {
   const [value, setValue] = useState();
   const [start, setStart] = useState();
   const [end, setEnd] = useState();
@@ -75,7 +72,7 @@ const StartSessionScreen = () => {
           </Callout>
         </Marker>}
       </MapView>
-      <View>
+      <View style={tw`mt-2`}>
         <Text style={tw`text-3xl font-bold`}>New Session</Text>
       </View>
 
@@ -150,6 +147,3 @@ const styles = StyleSheet.create({
     marginTop: -0.5,
   }
 });
-
-
-export default StartSessionScreen

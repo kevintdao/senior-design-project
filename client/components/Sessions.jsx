@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity } from 'react-native'
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 import React, { useState } from 'react'
 import tw from 'twrnc'
 import { Ionicons } from '@expo/vector-icons'
@@ -11,7 +11,7 @@ export default function Sessions(props) {
 
   return (
     <View style={tw``}>
-      <View style={tw`border border-gray-300 rounded-md h-4/5`}>
+      <View style={tw`h-4/5`}>
         <FlatList
           data={Object.keys(data)}
           keyExtractor={(item, index) => index.toString()}
@@ -24,7 +24,7 @@ export default function Sessions(props) {
               <View style={tw`justify-between`}>
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  style={tw`bg-gray-400 border rounded p-2 m-2 ${value == item ? "border-green-600" : "border-gray-300"}`}
+                  style={tw`bg-gray-400 border rounded p-2 my-2 ${value == item ? "border-green-600" : "border-gray-300"}`}
                   onPress={() => setValue(item)}         
                 >
                   <View style={tw`flex-1 flex-row items-center justify-between`}>
@@ -44,7 +44,7 @@ export default function Sessions(props) {
           disabled={!value}
           onPress={() => onSelect(value)}
         >
-          <Text style={tw`text-white font-bold text-lg`}>Select</Text>
+          <Text style={tw`text-white text-lg`}>Select</Text>
         </TouchableOpacity>
       </View>
     </View>

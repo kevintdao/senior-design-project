@@ -1,7 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { auth, db } from './utils/firebase';
 import { setDoc, doc } from 'firebase/firestore';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { 
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider
+} from 'firebase/auth';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthContext = React.createContext();
@@ -31,6 +38,13 @@ export function AuthProvider({ children }){
 
     const data = await signOut(auth);
     await AsyncStorage.removeItem("auth_data");
+  }
+
+  const changePassword = async (currPassword, newPassword) => {
+    const user = auth.currentUser;
+    const credential = EmailAuthProvider.credential(user.email, currPassword);
+    await reauthenticateWithCredential(user, credential);
+    const data = await updatePassword(user, newPassword);
   }
 
   const setUserInFirestore = async (email) => {
@@ -65,9 +79,11 @@ export function AuthProvider({ children }){
 
   const value = {
     currentUser,
+    loading,
     login,
     signup,
-    logout
+    logout,
+    changePassword
   }
 
   return (
