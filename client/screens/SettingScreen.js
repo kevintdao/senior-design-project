@@ -21,6 +21,12 @@ export default function SettingScreen({ navigation }) {
 
         <View>
           <View>
+            <TouchableOpacity style={tw`bg-green-600 mb-3 items-center rounded p-3`}
+              onPress={() => navigation.navigate('ChangePasswordScreen')}
+            >
+              <Text style={tw`text-white text-lg`}>Change Password</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity style={tw.style(`bg-green-800 items-center rounded p-3 mb-2 flex-row`)}
               onPress={handleLogout}
             >

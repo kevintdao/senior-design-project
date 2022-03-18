@@ -13,6 +13,7 @@ import NewSessionScreen from './screens/NewSessionScreen';
 import { useAuth } from './AuthContext';
 import Loading from './components/Loading';
 import SettingScreen from './screens/SettingScreen';
+import ChangePasswordScreen from './screens/ChangePasswordScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -45,6 +46,7 @@ export default function Router() {
   const SettingStackNavigator = ({ navigator, routes }) => (
     <SettingStack.Navigator>
       <SettingStack.Screen options={{ headerShown: false }} name='SettingScreen' component={SettingScreen} />
+      <SettingStack.Screen options={{ headerShown: false }} name='ChangePasswordScreen' component={ChangePasswordScreen} />
     </SettingStack.Navigator>
   )
 
