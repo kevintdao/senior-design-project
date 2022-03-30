@@ -1,65 +1,38 @@
 // Senior Design Spr 2022 - Team NULL
 
 // C libraries
-#include <math.h> // built-in
-#include <TinyGPSPlus.h> // installed
-#include <SoftwareSerial.h> // built-in
+#include <TinyGPSPlus.h>
+#include <SoftwareSerial.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 #define PI 3.141592654
 
-// L293D Motor driver pin setup and loop
-const int motor1pin1 = 5;
-const int motor1pin2 = 6;
-const int motor2pin1 = 9;
-const int motor2pin2 = 8;
-  
-void setupMotor() {
-  pinMode(motor1pin1, OUTPUT);
-  pinMode(motor1pin2, OUTPUT);
-  pinMode(motor2pin1, OUTPUT);
-  pinMode(motor2pin2, OUTPUT);
-}
-
-void loopMotor() {
-  //  Turn both motors clockwise and counter clockwise with 1s delay
-  analogWrite(motor1pin1, 255);
-  analogWrite(motor1pin2, 0);
-  delay(1000);
-
-  analogWrite(motor1pin1, 0);
-  analogWrite(motor1pin2, 255);
-  delay(1000);
-
-  analogWrite(motor2pin1, 255);
-  analogWrite(motor2pin2, 0);
-  delay(1000);
-
-  analogWrite(motor2pin1, 0);
-  analogWrite(motor2pin2, 255);
-  delay(1000);
-}
-
 // GPS setup
-static const int RXPin = 4, TXPin = 3;
+static const int RXPin = 9;
+static const int TXPin = 10;
 static const uint32_t GPSBaud = 9600;
 TinyGPSPlus gps;
 SoftwareSerial ss(RXPin, TXPin);
 
+void GPSsetup() {
+  ss.begin(GPSBaud);
+}
+// SENSORS setup
 // Ultrasonic-Sensor HC-SR04 pin setup and loop
-const int echoPin = 2;
-const int trigPin = 3;
+const int echoPin = 35;
+const int trigPin = 32;
 
 void setupUltra() {
-  pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
+  pinMode(trigPin, OUTPUT);  
 }
 
 // defines variables
 long duration; // variable for the duration of sound wave travel
 int distance; // variable for the distance measurement
 
-void loopUltra()
-{
+void loopUltra() {
   // Clears the trigPin condition
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -76,13 +49,121 @@ void loopUltra()
   Serial.print(distance);
   Serial.println(" cm");
 }
+
+// Temperature
+const int tmpPin = 33;
+OneWire oneWire(tmpPin);
+DallasTemperature sensors(&oneWire);
+
+void setupTemp() {
+  sensors.begin();
+}
+
+void loopTemp() {
+  sensors.requestTemperatures();
+  float tempC = sensors.getTempCByIndex(0);
+  float tempF = sensors.getTempFByIndex(0);
+  
+  Serial.print("Temperature: "+ String(tempC) + " ºC |");
+  Serial.println(String(tempF) + " ºF");
+
+  delay(1000);
+}
+
 // Wifi module pin setup
 
   // hotspot setup for wifi module
 
-// Calculate battery level
+// L293D Motor driver pin setup and loop
+const int en1 = 25; // does not work
+const int motor1pin1 = 26; 
+const int motor1pin2 = 27;
+const int en2 = 14; // does not work
+const int motor2pin1 = 12; 
+const int motor2pin2 = 13; 
+ 
+// Setting PWM properties
+const int freq = 30000;
+const int resolution = 10;
+int dutyCycle = 255;
+int COMMAND = 1;
+  
+void setupMotor() {
+  // sets the pins as outputs:
+  pinMode(motor1pin1, OUTPUT);
+  pinMode(motor1pin2, OUTPUT);
+  pinMode(en1, OUTPUT);
+  pinMode(motor2pin1, OUTPUT);
+  pinMode(motor2pin2, OUTPUT);
+  pinMode(en2, OUTPUT);
+  
+  // configure LED PWM functionalitites
+  ledcSetup(0, freq, resolution);
+  ledcSetup(1, freq, resolution);
+  
+  // attach the channel to the GPIO to be controlled
+  ledcAttachPin(en1, 0);
+  ledcAttachPin(en2, 1);
+  
+  // testing
+  Serial.print("Testing DC Motor...");
+}
 
-// Ultrasonic sensor pin setup
+void loopMotor() {
+  
+  ledcWrite(0, dutyCycle);
+  ledcWrite(1, dutyCycle);
+
+  // Turn the boat based on the COMMAND
+  
+  // Forward
+  if (COMMAND == 1) {    
+    digitalWrite(motor1pin1, HIGH);
+    digitalWrite(motor1pin2, LOW);
+    delay(1000);
+
+    digitalWrite(motor2pin1, HIGH);
+    digitalWrite(motor2pin2, LOW);
+    
+    COMMAND = 2;
+    delay(5000);
+  }
+  
+  // Backward
+  if (COMMAND == 2) {    
+    digitalWrite(motor1pin1, LOW);
+    digitalWrite(motor1pin2, HIGH);      
+    digitalWrite(motor2pin1, LOW);
+    digitalWrite(motor2pin2, HIGH);
+
+    COMMAND = 3;
+    delay(5000);
+  }
+  
+  // Left
+  if (COMMAND == 3) {    
+    digitalWrite(motor1pin1, HIGH);
+    digitalWrite(motor1pin2, LOW);    
+    digitalWrite(motor2pin1, LOW);
+    digitalWrite(motor2pin2, LOW);
+
+    COMMAND = 4;
+    delay(5000);
+  }
+  
+  // Right
+  if (COMMAND == 4) {    
+    digitalWrite(motor1pin1, LOW);
+    digitalWrite(motor1pin2, LOW);    
+    digitalWrite(motor2pin1, LOW);
+    digitalWrite(motor2pin2, HIGH);
+
+    COMMAND = 1;
+    delay(5000);
+  }  
+}
+
+// Calculate battery level
 
 ////// Boat variables //////
 // boat state
@@ -102,25 +183,25 @@ boolean ready = false;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  setupMotor();
+  GPSsetup();
   setupUltra();
-  ss.begin(GPSBaud);
+  setupTemp();
+  setupMotor();  
 }
 
 void loop() {
-  ///// based on the current location, calculate the direction of travel and distance
-    // if session is running
-      // get current location, check ultrasonic sensors for objects, check distance from target
-          // if distance is <2.5 meters of target, stop and record measurement
-          // else -- calculate direction and turn to calculated angle 
-              // if <30 degrees offset, check ultrasonic sensors
-                    // if ultrasonic sensors are good, move forward
-                    // else, recalculate the angle until its good
-              // 
-      // Wifi module -- send data variables e.g. location, current reading
-            // check state -- session start/stop
+ ///// based on the current location, calculate the direction of travel and distance
+  // if session is running
+    // get current location, check ultrasonic sensors for objects, check distance from target
+        // if distance is <2.5 meters of target, stop and record measurement
+        // else -- calculate direction and turn to calculated angle 
+            // if <30 degrees offset, check ultrasonic sensors
+                  // if ultrasonic sensors are good, move forward
+                  // else, recalculate the angle until its good
             // 
-  
+    // Wifi module -- send data variables e.g. location, current reading
+          // check state -- session start/stop
+          // 
   double targetLat = 0;//...get from user via post request ******* TODO ****
   double targetLon = 0;//...get from user via post request
   double currentLat = getCurrentLat();
@@ -131,9 +212,9 @@ void loop() {
   }
   double targetBear = getBearing(currentLat, currentLon, targetLat, targetLon);
   
-  loopMotor(); // fatima's testing function for motors
-  loopUltra(); // testing ultrasonic sensor
-  
+  loopUltra();
+  loopTemp();
+  loopMotor();
 }
 
 // calculate direction of travel in degrees (arg units -- degrees)
