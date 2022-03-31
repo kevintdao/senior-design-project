@@ -10,6 +10,40 @@
 
 #define PI 3.141592654
 
+// L293D Motor driver pin setup and loop
+const int motor1pin1 = 5;
+const int motor1pin2 = 6;
+const int motor2pin1 = 9;
+const int motor2pin2 = 8;
+
+void setupMotor()
+{
+  pinMode(motor1pin1, OUTPUT);
+  pinMode(motor1pin2, OUTPUT);
+  pinMode(motor2pin1, OUTPUT);
+  pinMode(motor2pin2, OUTPUT);
+}
+
+void loopMotor()
+{
+  //  Turn both motors clockwise and counter clockwise with 1s delay
+  analogWrite(motor1pin1, 255);
+  analogWrite(motor1pin2, 0);
+  delay(1000);
+
+  analogWrite(motor1pin1, 0);
+  analogWrite(motor1pin2, 255);
+  delay(1000);
+
+  analogWrite(motor2pin1, 255);
+  analogWrite(motor2pin2, 0);
+  delay(1000);
+
+  analogWrite(motor2pin1, 0);
+  analogWrite(motor2pin2, 255);
+  delay(1000);
+}
+
 // GPS setup
 static const int RXPin = 9;
 static const int TXPin = 10;
@@ -17,7 +51,8 @@ static const uint32_t GPSBaud = 9600;
 TinyGPSPlus gps;
 SoftwareSerial ss(RXPin, TXPin);
 
-void GPSsetup() {
+void GPSsetup()
+{
   ss.begin(GPSBaud);
 }
 // SENSORS setup
@@ -25,16 +60,18 @@ void GPSsetup() {
 const int echoPin = 35;
 const int trigPin = 32;
 
-void setupUltra() {
+void setupUltra()
+{
   pinMode(echoPin, INPUT);
   pinMode(trigPin, OUTPUT);
 }
 
 // defines variables
 long duration; // variable for the duration of sound wave travel
-int distance; // variable for the distance measurement
+int distance;  // variable for the distance measurement
 
-void loopUltra() {
+void loopUltra()
+{
   // Clears the trigPin condition
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -59,11 +96,13 @@ DallasTemperature sensors(&oneWire);
 float tempC = -127;
 float tempF = -196;
 
-void setupTemp() {
+void setupTemp()
+{
   sensors.begin();
 }
 
-void loopTemp() {
+void loopTemp()
+{
   sensors.requestTemperatures();
   float tempC = sensors.getTempCByIndex(0);
   float tempF = sensors.getTempFByIndex(0);
@@ -75,18 +114,20 @@ void loopTemp() {
 }
 
 // Wifi module pin setup
-const char* ssid = "ssid";
-const char* password = "pass";
-const char* host = "frozen-chamber-50976.herokuapp.com";
+const char *ssid = "ssid";
+const char *password = "pass";
+const char *host = "frozen-chamber-50976.herokuapp.com";
 const uint16_t port = 80;
 
 websockets::WebsocketsClient client;
 
-void setupWiFi() {
+void setupWiFi()
+{
   // Connect to wifi
   WiFi.begin(ssid, password);
   // Check if connected to wifi
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     Serial.println("Connecting to WiFi..");
     delay(500);
   }
@@ -94,23 +135,38 @@ void setupWiFi() {
   Serial.println(WiFi.localIP());
 
   bool connected = client.connect(host, port, "/");
-  if (connected) {
+  if (connected)
+  {
     Serial.println("Connected!");
   }
 
   // run callback when messages are received
-  client.onMessage([&](websockets::WebsocketsMessage message) {
-    Serial.println(message.data());
-  });
+  client.onMessage([&](websockets::WebsocketsMessage message)
+                   { Serial.println(message.data()); });
 }
 
-void loopWiFi() {
+// #define VOLTAGE_PIN 13 // replace 13 with correct pin
+
+// void setupBatteryReading(){
+//   pinMode(VOLTAGE_PIN, INPUT)
+// }
+
+// void loopBattery(){
+//   analogRead(VOLTAGE_PIN);
+//   delay(10000); //10 second delay
+// }
+
+// Ultrasonic sensor pin setup
+void loopWiFi()
+{
   pollMessage();
   client.send(String(tempC));
 }
 
-void pollMessage() {
-  if (client.available()) {
+void pollMessage()
+{
+  if (client.available())
+  {
     client.poll();
   }
 }
@@ -130,7 +186,8 @@ const int resolution = 10;
 int dutyCycle = 255;
 int COMMAND = 1;
 
-void setupMotor() {
+void setupMotor()
+{
   // sets the pins as outputs:
   pinMode(motor1pin1, OUTPUT);
   pinMode(motor1pin2, OUTPUT);
@@ -151,7 +208,8 @@ void setupMotor() {
   Serial.print("Testing DC Motor...");
 }
 
-void loopMotor() {
+void loopMotor()
+{
 
   ledcWrite(0, dutyCycle);
   ledcWrite(1, dutyCycle);
@@ -159,7 +217,8 @@ void loopMotor() {
   // Turn the boat based on the COMMAND
 
   // Forward
-  if (COMMAND == 1) {
+  if (COMMAND == 1)
+  {
     digitalWrite(motor1pin1, HIGH);
     digitalWrite(motor1pin2, LOW);
     delay(1000);
@@ -172,7 +231,8 @@ void loopMotor() {
   }
 
   // Backward
-  if (COMMAND == 2) {
+  if (COMMAND == 2)
+  {
     digitalWrite(motor1pin1, LOW);
     digitalWrite(motor1pin2, HIGH);
     digitalWrite(motor2pin1, LOW);
@@ -183,7 +243,8 @@ void loopMotor() {
   }
 
   // Left
-  if (COMMAND == 3) {
+  if (COMMAND == 3)
+  {
     digitalWrite(motor1pin1, HIGH);
     digitalWrite(motor1pin2, LOW);
     digitalWrite(motor2pin1, LOW);
@@ -194,7 +255,8 @@ void loopMotor() {
   }
 
   // Right
-  if (COMMAND == 4) {
+  if (COMMAND == 4)
+  {
     digitalWrite(motor1pin1, LOW);
     digitalWrite(motor1pin2, LOW);
     digitalWrite(motor2pin1, LOW);
@@ -219,20 +281,21 @@ boolean ready = false;
 // current direction/heading (via magnetometer)
 // target direction/heading (via calculation)
 
-
-
-
-void setup() {
+void setup()
+{
   // put your setup code here, to run once:
   Serial.begin(9600);
   GPSsetup();
   setupUltra();
+  setupBatteryReading();
+  ss.begin(GPSBaud);
   setupTemp();
   setupWiFi();
   setupMotor();
 }
 
-void loop() {
+void loop()
+{
   ///// based on the current location, calculate the direction of travel and distance
   // if session is running
   // get current location, check ultrasonic sensors for objects, check distance from target
@@ -245,16 +308,18 @@ void loop() {
   // Wifi module -- send data variables e.g. location, current reading
   // check state -- session start/stop
   //
-  double targetLat = 0;//...get from user via post request ******* TODO ****
-  double targetLon = 0;//...get from user via post request
+  double targetLat = 0; //...get from user via post request ******* TODO ****
+  double targetLon = 0; //...get from user via post request
   double currentLat = getCurrentLat();
   double currentLon = getCurrentLon();
-  if (currentLat == 911 || currentLon == 911) {
+  if (currentLat == 911 || currentLon == 911)
+  {
     ready = false; // prevents boat from moving until it has a valid GPS signal
     // send message to app session page... GPS signal not found
   }
   double targetBear = getBearing(currentLat, currentLon, targetLat, targetLon);
 
+  loopBattery();
   loopUltra();
   loopTemp();
   loopWiFi();
@@ -262,7 +327,8 @@ void loop() {
 }
 
 // calculate direction of travel in degrees (arg units -- degrees)
-double getBearing(double currentLat, double currentLon, double targetLat, double targetLon) {
+double getBearing(double currentLat, double currentLon, double targetLat, double targetLon)
+{
   currentLat = currentLat * PI / 180; // convert to radians
   currentLon = currentLon * PI / 180;
   targetLat = targetLat * PI / 180;
@@ -274,7 +340,8 @@ double getBearing(double currentLat, double currentLon, double targetLat, double
 }
 
 // calculate distance to target in meters
-double getDistance(double currentLat, double currentLon, double targetLat, double targetLon) {
+double getDistance(double currentLat, double currentLon, double targetLat, double targetLon)
+{
   currentLat = currentLat * PI / 180; // convert to radians
   currentLon = currentLon * PI / 180;
   targetLat = targetLat * PI / 180;
@@ -287,25 +354,32 @@ double getDistance(double currentLat, double currentLon, double targetLat, doubl
   return d;
 }
 
-double getCurrentLat() {
-  if (gps.location.isValid()) {
+double getCurrentLat()
+{
+  if (gps.location.isValid())
+  {
     return gps.location.lat();
   }
-  else {
+  else
+  {
     return 911; // invalid reading - if lat or lng = 911 halt the boat
   }
 }
 
-double getCurrentLon() {
-  if (gps.location.isValid()) {
+double getCurrentLon()
+{
+  if (gps.location.isValid())
+  {
     return gps.location.lng();
   }
-  else {
+  else
+  {
     return 911; // invalid reading
   }
 }
 
-double getCurrentBear() {
+double getCurrentBear()
+{
   return 0;
   // insert magnetometer code here
 }
@@ -319,7 +393,8 @@ double getCurrentBear() {
 // move backward (for after running into something)
 
 // turn to direction of travel
-void turnToBearing(double targetBear) {
+void turnToBearing(double targetBear)
+{
   double currentBear = getCurrentBear();
   // turn until currentBear == targetBear
 }
