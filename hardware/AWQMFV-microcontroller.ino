@@ -7,16 +7,6 @@
 
 #define PI 3.141592654
 
-#define VOLTAGE_PIN 13
-
-void setupBatteryReading(){
-  pinMode(VOLTAGE_PIN, INPUT)
-}
-
-void loopBattery(){
-  analogRead(VOLTAGE_PIN);
-  delay(10000); //10 second delay
-}
 
 // L293D Motor driver pin setup and loop
 const int motor1pin1 = 5;
@@ -92,6 +82,17 @@ void loopUltra()
   // hotspot setup for wifi module
 
 // Calculate battery level
+
+// #define VOLTAGE_PIN 13 // replace 13 with correct pin
+
+// void setupBatteryReading(){
+//   pinMode(VOLTAGE_PIN, INPUT)
+// }
+
+// void loopBattery(){
+//   analogRead(VOLTAGE_PIN);
+//   delay(10000); //10 second delay
+// }
 
 // Ultrasonic sensor pin setup
 
