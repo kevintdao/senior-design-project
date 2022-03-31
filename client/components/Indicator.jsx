@@ -10,7 +10,8 @@ export default function Indicator() {
     // const { currentUser } = useAuth();
     // const user = currentUser.user;
     // const email = user.email;
-
+    
+    // add refresh to update indicator regularly by pulling from db every ~10s
     // const q = query(collection(db, `users/${email}/batterylevel`));
     // const docsSnap = await getDocs(q);
 
@@ -28,15 +29,15 @@ export default function Indicator() {
 
     if(powerLevel == 'Empty')
     {
-        return empty
+        return <View style={tw``}>{empty}</View>
     }
     else if(powerLevel == 'Low')
     {
-        return low
+        return <View style={tw``}>{low}</View>
     }
     else if(powerLevel == 'Half')
     {
-        return half
+        return <View style={tw``}>{half}</View>
     }
-    return full
+    return <View style={tw``}>{full}</View>
 }
