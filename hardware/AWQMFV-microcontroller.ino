@@ -7,6 +7,17 @@
 
 #define PI 3.141592654
 
+#define VOLTAGE_PIN 13
+
+void setupBatteryReading(){
+  pinMode(VOLTAGE_PIN, INPUT)
+}
+
+void loopBattery(){
+  analogRead(VOLTAGE_PIN);
+  delay(10000); //10 second delay
+}
+
 // L293D Motor driver pin setup and loop
 const int motor1pin1 = 5;
 const int motor1pin2 = 6;
@@ -104,6 +115,7 @@ void setup() {
   Serial.begin(9600);
   setupMotor();
   setupUltra();
+  setupBatteryReading();
   ss.begin(GPSBaud);
 }
 
@@ -133,7 +145,7 @@ void loop() {
   
   loopMotor(); // fatima's testing function for motors
   loopUltra(); // testing ultrasonic sensor
-  
+  loopBattery(); 
 }
 
 // calculate direction of travel in degrees (arg units -- degrees)
