@@ -1,5 +1,13 @@
 require('dotenv').config()
 const express = require('express')
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./service-account.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
 const app = express()
 
 const server = require('http').createServer(app)
@@ -18,4 +26,5 @@ app.get('/', (req, res) => {
 
 server.listen(port, () => {
   console.log(`Listening on port ${port}`)
+  console.log(admin)
 })
