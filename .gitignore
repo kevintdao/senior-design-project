@@ -17,3 +17,5 @@ web-build/
 .vscode/
 
 .idea/
+
+*/service-account.json*
