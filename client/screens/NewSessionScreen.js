@@ -1,17 +1,36 @@
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
 import React from 'react'
 import tw from 'twrnc'
+import MapView, { Callout, Marker } from 'react-native-maps'
 
 export default function NewSessionScreen(props) {
-  const start = props.route.params.start;
-  const end = props.route.params.end;
+  const markers = props.route.params.markers;
 
   return (
-    <View style={tw`flex-1 items-center justify-center`}>
-      <Text>Start Lat: {start.latitude}</Text>
-      <Text>Start Long: {start.longitude}</Text>
-      <Text>End Lat: {end.latitude}</Text>
-      <Text>End Long: {end.longitude}</Text>
+    <View style={tw`flex-1 items-center bg-gray-100`}>
+      <MapView 
+        provider="google"
+        style={styles.map} 
+        initialRegion={{
+          latitude: 41.65944687412238,
+          longitude: -91.53652901001102,
+          latitudeDelta: 0.09,
+          longitudeDelta: 0.04,
+        }}
+      ></MapView>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height / 1.5,
+  }
+})
