@@ -11,6 +11,10 @@ export default function StartSessionScreen ({ navigation }) {
     setValue(type);
   }
 
+  const clearMarkers = () => {
+    setMarkers([])
+  }
+
   const mapOnPress = (e) => {
     const coordinate = e.nativeEvent.coordinate;
     if(value == 'end'){
@@ -55,6 +59,13 @@ export default function StartSessionScreen ({ navigation }) {
           onPress={() => placeMarker('end')}
         >
           <Text style={tw`text-white text-lg`}>Place End Marker</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={tw`mt-3 items-center border border-red-600 rounded-md p-3 bg-red-600`}
+          onPress={() => clearMarkers()}
+        >
+          <Text style={tw`text-white text-lg`}>Clear all markers</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
