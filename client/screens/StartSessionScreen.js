@@ -5,8 +5,7 @@ import MapView, { Callout, Marker } from 'react-native-maps'
 
 export default function StartSessionScreen ({ navigation }) {
   const [value, setValue] = useState();
-  const [start, setStart] = useState();
-  const [end, setEnd] = useState();
+  const [markers, setMarkers] = useState([])
 
   const placeMarker = (type) => {
     setValue(type);
@@ -14,16 +13,14 @@ export default function StartSessionScreen ({ navigation }) {
 
   const mapOnPress = (e) => {
     const coordinate = e.nativeEvent.coordinate;
-    if(value == 'start'){
-      setStart(coordinate);
-    }
-
-    else if(value == 'end'){
-      setEnd(coordinate);
+    if(value == 'end'){
+      setMarkers([...markers, coordinate])
     }
 
     setValue("");
   }
+
+  console.log(markers)
 
   return (
     <View style={tw`flex-1 items-center bg-gray-100`}>
@@ -38,52 +35,21 @@ export default function StartSessionScreen ({ navigation }) {
         }}
         onPress={(e) => mapOnPress(e)}
       >
-        {/* start marker */}
-        {start && <Marker
-          key='start'
-          pinColor='blue'
-          coordinate={start}
-        >
-          <Callout tooltip>
-            <View>
-              <View style={styles.bubble}>
-                <Text style={styles.name}>Start Location</Text>
-              </View>
-              <View style={styles.arrowBorder} />
-              <View style={styles.arrow} />
-            </View>
-          </Callout>
-        </Marker>}
 
-        {/* end marker */}
-        {end && <Marker
-          key='end'
-          pinColor='red'
-          coordinate={end}
-        >
-          <Callout tooltip>
-            <View>
-              <View style={styles.bubble}>
-                <Text style={styles.name}>End Location</Text>
-              </View>
-              <View style={styles.arrowBorder} />
-              <View style={styles.arrow} />
-            </View>
-          </Callout>
-        </Marker>}
+        {markers.map((item, index) => (
+          <Marker
+            pinColor='red'
+            coordinate={item}
+            key={index}
+          >
+          </Marker>
+        ))}
       </MapView>
       <View style={tw`mt-2`}>
         <Text style={tw`text-3xl font-bold`}>New Session</Text>
       </View>
 
       <View style={tw`w-4/5 max-w-md`}> 
-        <TouchableOpacity 
-          style={tw`mt-3 items-center border border-green-600 rounded-md p-3 ${value == 'start' ? "bg-gray-300" : "bg-green-600"}`}
-          onPress={() => placeMarker('start')}
-        >
-          <Text style={tw`text-white text-lg`}>Place Start Marker</Text>
-        </TouchableOpacity>
-
         <TouchableOpacity 
           style={tw`mt-3 items-center border border-green-600 rounded-md p-3 ${value == 'end' ? "bg-gray-300" : "bg-green-600"}`}
           onPress={() => placeMarker('end')}
@@ -92,11 +58,10 @@ export default function StartSessionScreen ({ navigation }) {
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={tw`mt-3 items-center rounded-md p-3 ${start && end ? "bg-blue-700" : "bg-gray-300"}`}
-          disabled={!start && !end}
+          style={tw`mt-3 items-center rounded-md p-3 ${markers.length > 0 ? "bg-blue-700" : "bg-gray-300"}`}
+          disabled={markers.length == 0}
           onPress={() => navigation.navigate("NewSessionScreen", { 
-            start: start,
-            end: end, 
+            markers: markers
           })}
         >
           <Text style={tw`text-white text-lg font-bold`}>Begin New Session</Text>
