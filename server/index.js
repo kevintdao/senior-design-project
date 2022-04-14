@@ -29,14 +29,24 @@ app.get('/', (req, res) => {
   // console.log(firestoreDB.collection('users').doc('test@test.com').get().then(doc => {
   //   console.log(doc.data())
   // }))
-  const ref = realtimeDB.ref('/')
-  ref.on('value', snapshot => {
-    console.log(snapshot.val())
+})
+
+const ref = realtimeDB.ref('/')
+// send hardware data to Firebase
+app.post('/send_data', (req, res) => {
+  ref.update({
+    battery: 90
   })
 })
 
-app.post('/send_data', (req, res) => {
-
+// send Firebase data to hardware
+var data;
+ref.on('value', snapshot => {
+  console.log(snapshot.val())
+  data = snapshot.val()
+})
+app.get('/get_data', (req, res) => {
+  res.send(data)
 })
 
 server.listen(port, () => {
