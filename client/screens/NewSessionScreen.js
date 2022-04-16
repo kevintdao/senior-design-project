@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-nati
 import React, { useState, useEffect } from 'react'
 import tw from 'twrnc'
 import MapView, { Callout, Marker } from 'react-native-maps'
-import { ref, onValue, get } from 'firebase/database'
+import { ref, onValue, update } from 'firebase/database'
 import { rtdb } from '../utils/firebase'
 import Loading from '../components/Loading'
 import Indicator from '../components/Indicator'
@@ -17,6 +17,12 @@ export default function NewSessionScreen(props) {
       setBoat(snapshot.val())
     })
   }, [])
+
+  const toggleEmergency = () => {
+    update(rtRef, {
+      emergency_stop: !boat.emergency_stop
+    })
+  }
 
   if (!boat) return <Loading />
 
@@ -58,9 +64,10 @@ export default function NewSessionScreen(props) {
 
       <View style={tw`w-4/5 max-w-md`}> 
         <TouchableOpacity 
-          style={tw`bg-red-600 my-3 items-center rounded p-3`}
+          style={tw`my-3 items-center rounded p-3 ${boat.emergency_stop ? 'bg-red-600' : 'bg-green-600'}`}
+          onPress={toggleEmergency}
         >
-          <Text style={tw`text-white text-lg`}>Emergency Stop</Text>
+          <Text style={tw`text-white text-lg`}>{boat.emergency_stop ? 'Emergency Stop' : 'Resume'}</Text>
         </TouchableOpacity>
       </View>
 

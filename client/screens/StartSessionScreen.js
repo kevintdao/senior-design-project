@@ -37,8 +37,6 @@ export default function StartSessionScreen ({ navigation }) {
 
   if (!boat) return <Loading />
 
-  console.log(boat)
-
   return (
     <View style={tw`flex-1 items-center bg-gray-100`}>
       <MapView 
