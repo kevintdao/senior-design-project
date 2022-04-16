@@ -37,6 +37,15 @@ export default function NewSessionScreen(props) {
           coordinate={{ latitude: boat.lat, longitude: boat.long }}
           key='boat'
         />
+
+        {markers.map((item, index) => (
+          <Marker
+            pinColor='red'
+            coordinate={item}
+            key={index}
+          >
+          </Marker>
+        ))}
       </MapView>
 
       <Indicator level={boat.battery} />
