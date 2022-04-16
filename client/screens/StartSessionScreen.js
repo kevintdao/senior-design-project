@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-nati
 import React, { useEffect, useState } from 'react'
 import tw from 'twrnc'
 import MapView, { Callout, Marker } from 'react-native-maps'
-import { ref, onValue, get } from 'firebase/database'
+import { ref, onValue, get, update } from 'firebase/database'
 import { rtdb } from '../utils/firebase'
 import Loading from '../components/Loading'
 
@@ -29,6 +29,20 @@ export default function StartSessionScreen ({ navigation }) {
     setValue("");
   }
 
+  const saveMarkers = () => {
+    update(rtRef, {
+      start: {
+        latitude: boat.latitude,
+        longitude: boat.longitude
+      },
+      markers: markers
+    })
+
+    navigation.navigate("NewSessionScreen", { 
+      markers: markers
+    })
+  }
+
   useEffect(() => {
     return onValue(rtRef, snapshot => {
       setBoat(snapshot.val())
@@ -52,7 +66,7 @@ export default function StartSessionScreen ({ navigation }) {
       >
         <Marker
           pinColor='blue'
-          coordinate={{ latitude: boat.lat, longitude: boat.long }}
+          coordinate={{ latitude: boat.latitude, longitude: boat.longitude }}
           key='boat'
         />
 
@@ -87,9 +101,7 @@ export default function StartSessionScreen ({ navigation }) {
         <TouchableOpacity 
           style={tw`mt-3 items-center rounded-md p-3 ${markers.length > 0 ? "bg-blue-700" : "bg-gray-300"}`}
           disabled={markers.length == 0}
-          onPress={() => navigation.navigate("NewSessionScreen", { 
-            markers: markers
-          })}
+          onPress={() => saveMarkers()}
         >
           <Text style={tw`text-white text-lg font-bold`}>Begin New Session</Text>
         </TouchableOpacity>

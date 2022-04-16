@@ -40,7 +40,7 @@ export default function NewSessionScreen(props) {
       >
         <Marker
           pinColor='blue'
-          coordinate={{ latitude: boat.lat, longitude: boat.long }}
+          coordinate={{ latitude: boat.latitude, longitude: boat.longitude }}
           key='boat'
         />
 
