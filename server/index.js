@@ -34,15 +34,17 @@ app.get('/', (req, res) => {
 const ref = realtimeDB.ref('/')
 // send hardware data to Firebase
 app.post('/send_data', (req, res) => {
+  const time = admin.firestore.Timestamp.fromDate(new Date())
   ref.update({
-    battery: 90
+    battery: 90,
+    timestamp: time.toDate()
   })
+  res.send('done')
 })
 
 // send Firebase data to hardware
 var data;
 ref.on('value', snapshot => {
-  console.log(snapshot.val())
   data = snapshot.val()
 })
 app.get('/get_data', (req, res) => {
