@@ -9,6 +9,7 @@ import {
 } from "@env";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore"
+import { getDatabase } from "firebase/database"
 import { getAuth, initializeAuth } from "firebase/auth";
 import { getReactNativePersistence } from 'firebase/auth/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -36,7 +37,8 @@ else{
   auth = getAuth();
 }
 const db = getFirestore();
+const rtdb = getDatabase()
 
-export { auth, db };
+export { auth, db, rtdb };
 
 export default app;
