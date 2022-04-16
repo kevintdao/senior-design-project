@@ -19,7 +19,7 @@ export default function Indicator ({ level }) {
     else if (level > 75) batterylevel = full
     
     return (
-    <View style={tw`flex-row align-center items-center mt-2`}>
+    <View style={tw`flex-row items-center`}>
         {batterylevel}
         <Text style={tw`ml-2`}>{`${level}%`}</Text>
     </View>

@@ -48,7 +48,29 @@ export default function NewSessionScreen(props) {
         ))}
       </MapView>
 
-      <Indicator level={boat.battery} />
+      <View style={tw`w-4/5 max-w-md`}> 
+        <View style={tw`flex-row justify-between`}>
+          <Text style={tw`text-lg font-bold`}>Current Reading</Text>
+          <Indicator level={boat.battery} />
+        </View>
+        <Text style={tw`text-lg`}>{`Temperature: ${boat.temperature}°C`}</Text>
+      </View>
+
+      <View style={tw`w-4/5 max-w-md`}> 
+        <TouchableOpacity 
+          style={tw`bg-red-600 my-3 items-center rounded p-3`}
+        >
+          <Text style={tw`text-white text-lg`}>Emergency Stop</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={tw`w-4/5 max-w-md`}> 
+        <TouchableOpacity 
+          style={tw`bg-blue-600 mb-3 items-center rounded p-3`}
+        >
+          <Text style={tw`text-white text-lg`}>Return to Start</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   )
 }
@@ -62,6 +84,6 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height / 1.5,
+    height: Dimensions.get('window').height / 2,
   }
 })
