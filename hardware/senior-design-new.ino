@@ -7,8 +7,8 @@
 #include <DallasTemperature.h>
 #include <ArduinoWebsockets.h>
 #include <WiFi.h>
-#include <ArduinoWebsockets.h>
-
+#include <HTTPClient.h>
+#include <Arduino_JSON.h>
 
 // * * * * * * * * * * * * * * * * * * * * * * * PIN VALUES * * * * * * * 
 // motor pins
@@ -41,6 +41,7 @@ TinyGPSPlus gps;
 SoftwareSerial ss(RXPin, TXPin); // gps variables
 
 websockets::WebsocketsClient client; // web socket client variable
+HTTPClient http;
 
 long duration1; // duration of sound wave travel LEFT
 int distance1;  // distance measurement (ultrasonic sensor variables)
@@ -91,7 +92,7 @@ void setupWiFi() // Wifi module setup
   const char *password = "pass";
   const char *host = "frozen-chamber-50976.herokuapp.com"; // CHANGE HOST HERE
   const uint16_t port = 80;
-  
+  const String serverName = "..../send_data";
   // Connect to wifi
   WiFi.begin(ssid, password);
   // Check if connected to wifi
@@ -243,8 +244,25 @@ void backwardMotors() {
 // send json file to the server containing data to be saved in Firebase
 void sendDataToServer(double temp, double curLat, double curLon, double curBear, double curBatt, double curTargetLat, double curTargetLon) {
   // format into json and send to server as json
+
+  http.begin(serverName);
+  http.addHeader("Content-Type", "application/json");
+  int httpResponseCode = http.POST(makeJsonString(temp, curLat, curLon, curBear, curBatt, curTargetLat, curTargetLon););
+  delay(10000);
 }
 
+
+String makeJsonString(double temp, double curLat, double curLon, double curBear, double curBatt, double curTargetLat, double curTargetLon){
+    String json = "{\"api_key\":" + 3 + ",
+   \"temp\":" + temp + ",
+    \"curLat\":" + curLat + ",
+     \"curLon\":" + curLon + ",
+      \"curBear\":" + curBear + ",
+       \"curBatt\":" + curBatt + ",
+        \"curTargetLat\":" + curTargetLat + ",
+         \"curTargetLon\":" + curTargetLon + "}";
+  return json;
+}
 // get messages from the server targets, em stop, RTS, resume
 
 
