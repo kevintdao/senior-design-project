@@ -111,8 +111,18 @@ void setupWiFi() // Wifi module setup
   }
 
   // run callback when messages are received
-  client.onMessage([&](websockets::WebsocketsMessage message)
-                   { Serial.println(message.data()); });
+  client.onMessage([&](websockets::WebsocketsMessage message){ 
+      Serial.println(message.data()); 
+      if(message.data() == "STOP"){
+
+      }
+      else if(message.data() == "RESUME"){
+
+      }
+      else if(message.data() == "RTS"){ //rts = return to start
+
+      }
+      });
 }
 
 void setupMotor() // Motors setup ------ Needs to be edited along with the motor pins
