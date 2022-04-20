@@ -370,8 +370,8 @@ void loop() { // session has started and targets have been received
     // once session is complete just stop, and send it to an infinite loop to stop main loop
     if (arrived && currentTargetLat == startLat) { // returned to start
       inSession = false;
-      targetLats[6] = [100,100,100,100,100,100]; // reset targets
-      targetLons[6] = [100,100,100,100,100,100];
+      targetLats = [100,100,100,100,100,100]; // reset targets
+      targetLons = [100,100,100,100,100,100];
     }
   }
   else { // not in session -- for sensor testing
