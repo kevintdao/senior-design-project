@@ -42,6 +42,8 @@ SoftwareSerial ss(RXPin, TXPin); // gps variables
 
 websockets::WebsocketsClient client; // web socket client variable
 HTTPClient http;
+const String serverName = "..../send_data";
+
 
 long duration1; // duration of sound wave travel LEFT
 int distance1;  // distance measurement (ultrasonic sensor variables)
@@ -52,13 +54,18 @@ int distance3;  // distance measurement (ultrasonic sensor variables)
 
 int dutyCycle = 255; // motor duty cycle variable
 
-double targetLats[6] = {100,100,100,100,100,100}; // target received from server
-double targetLons[6] = {100,100,100,100,100,100};
+double targetLats[6] = [100,100,100,100,100,100]; // target received from server
+double targetLons[6] = [100,100,100,100,100,100];
 
 double currentTargetLat; // the target to which the boat is headed currently
 double currentTargetLon;
 
+double currentLat; // current GPS location
+double currentLon;
 
+double currentHead; // current heading (mag reading)
+
+int maxNTargets = 6; // check this with Truong******
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP HELPER FUNCTIONS * * * * * * *
 void GPSsetup() // GPS setup
@@ -73,14 +80,6 @@ void setupUltra() // Ultrasonic sensor setup
   pinMode(trigPin, OUTPUT);
 }
 
-void setupMotor() // Motors setup
-{
-  pinMode(motor1pin1, OUTPUT);
-  pinMode(motor1pin2, OUTPUT);
-  pinMode(motor2pin1, OUTPUT);
-  pinMode(motor2pin2, OUTPUT);
-}
-
 void setupTemp() // Temp sensor setup
 {
   sensors.begin();
@@ -92,7 +91,7 @@ void setupWiFi() // Wifi module setup
   const char *password = "pass";
   const char *host = "frozen-chamber-50976.herokuapp.com"; // CHANGE HOST HERE
   const uint16_t port = 80;
-  const String serverName = "..../send_data";
+  
   // Connect to wifi
   WiFi.begin(ssid, password);
   // Check if connected to wifi
@@ -111,46 +110,49 @@ void setupWiFi() // Wifi module setup
   }
 
   // run callback when messages are received
-  client.onMessage([&](websockets::WebsocketsMessage message){ 
-      Serial.println(message.data()); 
-      if(message.data() == "STOP"){
-
+  client.onMessage([&](websockets::WebsocketsMessage message){
+      if (targetLats[0] == 100) {
+        // set marker > 0 > latitude
+        for (int i = 0; i < maxNTargets; i++) {
+          //set marker > i > latitude/longitude
+          targetLats[i] = 
+          targetLons[i] = 
+        }
       }
-      else if(message.data() == "RESUME"){
 
-      }
-      else if(message.data() == "RTS"){ //rts = return to start
-
-      }
-      else if(message.data()){ 
-
-      }
-      });
+      // handling commands from user ie. emergency stop TODO *********
+  });
 }
 
-void setupMotor() // Motors setup ------ Needs to be edited along with the motor pins
-{
-  const int freq = 30000;
-  const int resolution = 10;
-  
-  // sets the pins as outputs:
-  pinMode(motor1pin1, OUTPUT);
-  pinMode(motor1pin2, OUTPUT);
-  pinMode(en1, OUTPUT);
-  pinMode(motor2pin1, OUTPUT);
-  pinMode(motor2pin2, OUTPUT);
-  pinMode(en2, OUTPUT);
+//void setupMotor() // Motors setup ------ Needs to be edited along with the motor pins
+//{
+//  const int freq = 30000;
+//  const int resolution = 10;
+//  
+//  // sets the pins as outputs:
+//  pinMode(motor1pin1, OUTPUT);
+//  pinMode(motor1pin2, OUTPUT);
+//  pinMode(en1, OUTPUT);
+//  pinMode(motor2pin1, OUTPUT);
+//  pinMode(motor2pin2, OUTPUT);
+//  pinMode(en2, OUTPUT);
+//
+//  // configure LED PWM functionalitites
+//  ledcSetup(0, freq, resolution);
+//  ledcSetup(1, freq, resolution);
+//
+//  // attach the channel to the GPIO to be controlled
+//  ledcAttachPin(en1, 0);
+//  ledcAttachPin(en2, 1);
+//}
 
-  // configure LED PWM functionalitites
-  ledcSetup(0, freq, resolution);
-  ledcSetup(1, freq, resolution);
-
-  // attach the channel to the GPIO to be controlled
-  ledcAttachPin(en1, 0);
-  ledcAttachPin(en2, 1);
-}
-
-
+//void setupMotor() // Motors setup
+//{
+//  pinMode(motor1pin1, OUTPUT);
+//  pinMode(motor1pin2, OUTPUT);
+//  pinMode(motor2pin1, OUTPUT);
+//  pinMode(motor2pin2, OUTPUT);
+//}
 
 // * * * * * * * * * * * * * * * * * * * * * * * OTHER HELPER FUNCTIONS * * * * * * *
 void pollMessage() // Poll the web client
@@ -213,20 +215,20 @@ double getCurrentLon()
   }
 }
 
-double getCurrentBear()
+double getCurrentHead()
 {
   return 0;
   // insert magnetometer code here
 }
 
-void turnToBearing(double targetBear) // turn to direction of travel
+void headingCorrection(double targetBear) // turn to direction of travel
 {
   double currentBear = getCurrentBear();
-  // turn until currentBear == targetBear
+  // turn until currentHead == targetBear
 }
 
 // check for objects in the way -- set offset of sensors (left and right, front)
-void objectDetection() {
+void objectDetection(int d1, int d2, int d3) {
   
 }
 
@@ -254,26 +256,43 @@ void backwardMotors() {
   
 }
 
-// send json file to the server containing data to be saved in Firebase
-void sendDataToServer(double temp, double curLat, double curLon, double curBear, double curBatt, double curTargetLat, double curTargetLon) {
-  // format into json and send to server as json
+// ultrasonic sensors get functions
+int getDistance1() { // left
+  
+}
 
+int getDistance2() { // front
+  
+}
+
+int getDistance3() { // right
+  
+}
+
+// check whether the boat has arrived to destination
+void checkArrival() {
+  
+}
+
+// send json file to the server containing data to be saved in Firebase
+void sendDataToServer(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon) {
+  // format into json and send to server as json
   http.begin(serverName);
   http.addHeader("Content-Type", "application/json");
-  int httpResponseCode = http.POST(makeJsonString(temp, curLat, curLon, curBear, curBatt, curTargetLat, curTargetLon););
-  delay(10000);
+  int httpResponseCode = http.POST(makeJsonString(temp, curLat, curLon, curHead, curBatt, curTargetLat, curTargetLon));
 }
 
 
-String makeJsonString(double temp, double curLat, double curLon, double curBear, double curBatt, double curTargetLat, double curTargetLon){
+String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, int inSession, int atTarget){
     String json = "{\"api_key\":" + 3 + ",
-   \"temp\":" + temp + ",
-    \"curLat\":" + curLat + ",
-     \"curLon\":" + curLon + ",
-      \"curBear\":" + curBear + ",
-       \"curBatt\":" + curBatt + ",
-        \"curTargetLat\":" + curTargetLat + ",
-         \"curTargetLon\":" + curTargetLon + "}";
+   \"temp\":" + String(temp) + ",
+    \"curLat\":" + String(curLat) + ",
+     \"curLon\":" + String(curLon) + ",
+      \"curHead\":" + String(curHead) + ",
+       \"curBatt\":" + String(curBatt) + ",
+        \"curTargetLat\":" + String(curTargetLat) + ",
+         \"inSession\":" + String(inSession) + ",
+          \"curTargetLon\":" + String(curTargetLon) + "}";
   return json;
 }
 // get messages from the server targets, em stop, RTS, resume
@@ -281,20 +300,56 @@ String makeJsonString(double temp, double curLat, double curLon, double curBear,
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP * * * * * * *
 void setup() {
-  // insert above setup functions and comments
-
+  setupTemp(); // temp sensor setup
+  GPSsetup(); // GPS setup
+  setupMag(); // magnetometer setup
+  setupUltra(); // setup ultrasonic sensors
+  setupMotors(); // setup motors
+  setupWifi();  // setup wifi connection + receiving messages from the server
+  
   // infinite loop which is broken only if targets are received from the server
-  while(true) {
-    // if the targets are received from the server
-    // update targetLats and targetLons
+  do {
+    pollMessage();
+    delay(100);
   }
+  while (targetLats[0] == 100);
+
+  currentTargetLat = targetLats[0];
+  currentTargetLon = targetLons[0];
+
+  currentHead = getCurrentHead();
+  currentLat = getCurrentLat();
+  currentLon = getCurrentLon();
+  distance1 = getDistance1();
+  distance2 = getDistance2();
+  distance3 = getDistance3();
+  tempC = getTemperature();
+
+  headingCorrection(); // turn to bearing
+  objectDetection(); // make sure no obstructions are present, if so, correct
+  forwardMotors(); // move forward
 }
 
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * LOOP * * * * * * *
 void loop() { // session has started and targets have been received
+  currentHead = getCurrentHead();
+  currentLat = getCurrentLat();
+  currentLon = getCurrentLon();
+  distance1 = getDistance1();
+  distance2 = getDistance2();
+  distance3 = getDistance3();
+  tempC = getTemperature();
 
+
+  headingCorrection(); // turn to bearing if angle between bearing and heading is > threshold
+  objectDetection(); // make sure no obstructions are present, if so, correct
+  // *** above functions should make motors move forward if resulting in stop
+
+  checkArrival(); // check if boat has arrived at target location, if so, take measurement
+  
+  
   // once session is complete just stop, and send it to an infinite loop to stop main loop
   
 }
