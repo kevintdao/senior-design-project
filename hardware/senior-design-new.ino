@@ -45,12 +45,9 @@ HTTPClient http;
 const String serverName = "..../send_data";
 
 
-long duration1; // duration of sound wave travel LEFT
-int distance1;  // distance measurement (ultrasonic sensor variables)
-long duration2; // duration of sound wave travel FRONT
-int distance2;  // distance measurement (ultrasonic sensor variables)
-long duration3; // duration of sound wave travel RIGHT
-int distance3;  // distance measurement (ultrasonic sensor variables)
+int distance1;  // distance measurement (ultrasonic sensor variables) - left
+int distance2;  // distance measurement (ultrasonic sensor variables) - front
+int distance3;  // distance measurement (ultrasonic sensor variables) - right
 
 int dutyCycle = 255; // motor duty cycle variable
 
@@ -63,9 +60,14 @@ double currentTargetLon;
 double currentLat; // current GPS location
 double currentLon;
 
+double startLat; // starting GPS location
+double startLon;
+
 double currentHead; // current heading (mag reading)
 
 int maxNTargets = 6; // check this with Truong******
+
+boolean inSession = false;
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP HELPER FUNCTIONS * * * * * * *
 void GPSsetup() // GPS setup
@@ -117,6 +119,12 @@ void setupWiFi() // Wifi module setup
           //set marker > i > latitude/longitude
           targetLats[i] = 
           targetLons[i] = 
+        }
+        for (int i = 0; i < maxNTargets; i++) {
+          if (targetLats[i] == 100) {
+            targetLats[i] = startLat; // add start value to the end of target list to return to start
+            targetLons[i] = startLon;
+          }
         }
       }
 
@@ -283,7 +291,7 @@ void sendDataToServer(double temp, double curLat, double curLon, double curHead,
 }
 
 
-String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, int inSession, int atTarget){
+String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, boolean inSession, int atTarget){
     String json = "{\"api_key\":" + 3 + ",
    \"temp\":" + String(temp) + ",
     \"curLat\":" + String(curLat) + ",
@@ -308,14 +316,20 @@ void setup() {
   setupWifi();  // setup wifi connection + receiving messages from the server
   
   // infinite loop which is broken only if targets are received from the server
-  do {
+  while (true) {
     pollMessage();
-    delay(100);
+    if (targetLats[0] != 100) {
+      inSession = true;
+      break;
+    }
+    sendDataToServer();
+    delay(1000);
   }
-  while (targetLats[0] == 100);
 
   currentTargetLat = targetLats[0];
   currentTargetLon = targetLons[0];
+  startLat = getCurrentLat();
+  startLon = getCurrentLon();
 
   currentHead = getCurrentHead();
   currentLat = getCurrentLat();
@@ -334,22 +348,41 @@ void setup() {
 
 // * * * * * * * * * * * * * * * * * * * * * * * LOOP * * * * * * *
 void loop() { // session has started and targets have been received
-  currentHead = getCurrentHead();
-  currentLat = getCurrentLat();
-  currentLon = getCurrentLon();
-  distance1 = getDistance1();
-  distance2 = getDistance2();
-  distance3 = getDistance3();
-  tempC = getTemperature();
-
-
-  headingCorrection(); // turn to bearing if angle between bearing and heading is > threshold
-  objectDetection(); // make sure no obstructions are present, if so, correct
-  // *** above functions should make motors move forward if resulting in stop
-
-  checkArrival(); // check if boat has arrived at target location, if so, take measurement
+  if (inSession) {
+    currentHead = getCurrentHead();
+    currentLat = getCurrentLat();
+    currentLon = getCurrentLon();
+    distance1 = getDistance1();
+    distance2 = getDistance2();
+    distance3 = getDistance3();
+    tempC = getTemperature();
   
   
-  // once session is complete just stop, and send it to an infinite loop to stop main loop
+    headingCorrection(); // turn to bearing if angle between bearing and heading is > threshold
+    objectDetection(); // make sure no obstructions are present, if so, correct
+    // *** above functions should make motors move forward if resulting in stop
   
+    boolean arrived = checkArrival(); // check if boat has arrived at target location, if so, take measurement
+
+    sendDataToServer();
+    
+    
+    // once session is complete just stop, and send it to an infinite loop to stop main loop
+    if (arrived && currentTargetLat == startLat) { // returned to start
+      inSession = false;
+      targetLats[6] = [100,100,100,100,100,100]; // reset targets
+      targetLons[6] = [100,100,100,100,100,100];
+    }
+  }
+  else { // not in session -- for sensor testing
+    while (true) {
+      pollMessage();
+      if (targetLats[0] != 100) {
+        inSession = true;
+        break;
+      }
+      sendDataToServer();
+      delay(1000);
+    }
+  }
 }
