@@ -122,6 +122,9 @@ void setupWiFi() // Wifi module setup
       else if(message.data() == "RTS"){ //rts = return to start
 
       }
+      else if(message.data()){ 
+
+      }
       });
 }
 
