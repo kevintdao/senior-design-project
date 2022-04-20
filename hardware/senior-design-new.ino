@@ -65,9 +65,13 @@ double startLon;
 
 double currentHead; // current heading (mag reading)
 
+double currentBatt; // current battery level
+
 int maxNTargets = 6; // check this with Truong******
 
 boolean inSession = false;
+
+boolean atTarget = false;
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP HELPER FUNCTIONS * * * * * * *
 void GPSsetup() // GPS setup
@@ -283,15 +287,15 @@ void checkArrival() {
 }
 
 // send json file to the server containing data to be saved in Firebase
-void sendDataToServer(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon) {
+void sendDataToServer() {
   // format into json and send to server as json
   http.begin(serverName);
   http.addHeader("Content-Type", "application/json");
-  int httpResponseCode = http.POST(makeJsonString(temp, curLat, curLon, curHead, curBatt, curTargetLat, curTargetLon));
+  int httpResponseCode = http.POST(makeJsonString(tempC, currentLat, currentLon, currentHead, currentBatt, currentTargetLat, currentTargetLon, inSession, atTarget));
 }
 
 
-String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, boolean inSession, int atTarget){
+String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, boolean inSession, boolean atTarget){
     String json = "{\"api_key\":" + 3 + ",
    \"temp\":" + String(temp) + ",
     \"curLat\":" + String(curLat) + ",
@@ -338,6 +342,8 @@ void setup() {
   distance2 = getDistance2();
   distance3 = getDistance3();
   tempC = getTemperature();
+  currentBatt = getCurrentBatt();
+
 
   headingCorrection(); // turn to bearing
   objectDetection(); // make sure no obstructions are present, if so, correct
@@ -356,6 +362,7 @@ void loop() { // session has started and targets have been received
     distance2 = getDistance2();
     distance3 = getDistance3();
     tempC = getTemperature();
+    currentBatt = getCurrentBatt();
   
   
     headingCorrection(); // turn to bearing if angle between bearing and heading is > threshold
