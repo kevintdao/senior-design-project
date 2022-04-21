@@ -50,8 +50,8 @@ int distance3;  // distance measurement (ultrasonic sensor variables) - right
 
 int dutyCycle = 255; // motor duty cycle variable
 
-double targetLats[7] = [100,100,100,100,100,100, 100]; // target received from server
-double targetLons[7] = [100,100,100,100,100,100, 100];
+double targetLats[7] = [100,100,100,100,100,100,100]; // target received from server
+double targetLons[7] = [100,100,100,100,100,100,100];
 
 double currentTargetLat; // the target to which the boat is headed currently
 double currentTargetLon;
@@ -68,7 +68,9 @@ double currentBatt; // current battery level
 
 double currentTargetDist; // distance to current target
 
-int maxNTargets = 7; // check this with Truong******
+int maxNTargets = 7; // max user entered = 6 plus a space for the starting point
+
+int targetIndex = 0; // on way to first target
 
 bool inSession = false;
 
@@ -263,7 +265,7 @@ double getCurrentHead() // TODO ***********
 
 }
 
-void headingCorrection() // turn to direction of travel // TODO ***********
+void headingCorrection() // turn to direction of travel
 {
   stopMotors();
   delay(1000);
@@ -291,7 +293,7 @@ void headingCorrection() // turn to direction of travel // TODO ***********
   }
 }
 
-// check for objects in the way -- set offset of sensors (left and right, front) // TODO ***********
+// check for objects in the way -- set offset of sensors (left and right, front)
 void objectDetection() {
   distance1 = getDistance1();
   distance2 = getDistance2();
@@ -382,9 +384,21 @@ int getDistance3() { // right // TODO ***********
   
 }
 
-// check whether the boat has arrived to destination // TODO ***********
-void checkArrival() {
+// check whether the boat has arrived to destination
+bool checkArrival() {
   // if arrived take measurements set atTarget to 1 (send and set back to 0) and then set new currentTargetLat/Lon
+  if (currentTargetDist < 10) {
+    atTarget = true;
+    sendDataToServer();
+    atTarget = false;
+
+    targetIndex++;
+    currentTargetLat = targetLats[targetIndex]; // proceeding to next target
+    currentTargetLon = targetLons[targetIndex];
+
+    return true;
+  }
+  return false; // not yet arrived at target
 }
 
 // stops the boat when user selects option
