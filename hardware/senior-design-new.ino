@@ -360,7 +360,7 @@ String makeJsonString(double temp, double curLat, double curLon, double curHead,
        \"curBatt\":" + String(curBatt) + ",
         \"curTargetLat\":" + String(curTargetLat) + ",
          \"startLat\":" + String(startLat) + ",
-          \"startLong\":" + String(startLong) + ",
+          \"startLong\":" + String(startLon) + ",
            \"inSession\":" + String(inSession) + ",
             \"curTargetLon\":" + String(curTargetLon) + "}";
   return json;
