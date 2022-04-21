@@ -66,6 +66,8 @@ double currentHead; // current heading (mag reading)
 
 double currentBatt; // current battery level
 
+double currentTargetDist; // distance to current target
+
 int maxNTargets = 7; // check this with Truong******
 
 bool inSession = false;
@@ -399,6 +401,7 @@ String makeJsonString(double temp, double curLat, double curLon, double curHead,
          \"startLat\":" + String(startLat) + ",
           \"startLong\":" + String(startLong) + ",
            \"inSession\":" + String(inSession) + ",
+            \"currentTargetDist\":" + String(currentTargetDist) + ",
             \"curTargetLon\":" + String(curTargetLon) + "}";
   return json;
 }
@@ -455,6 +458,7 @@ void loop() {
     distance3 = getDistance3();
     tempC = getTemperature();
     currentBatt = getCurrentBatt();
+    currentTargetDist = getDistance(currentLat, currentLon, currentTargetLat, currentTargetLon);
   
     headingCorrection(); // turn to bearing if angle between bearing and heading is > threshold
     objectDetection(); // make sure no obstructions are present, if so, correct
