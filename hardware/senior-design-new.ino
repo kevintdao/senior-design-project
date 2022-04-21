@@ -51,8 +51,8 @@ int distance3;  // distance measurement (ultrasonic sensor variables) - right
 
 int dutyCycle = 255; // motor duty cycle variable
 
-double targetLats[6] = [100,100,100,100,100,100]; // target received from server
-double targetLons[6] = [100,100,100,100,100,100];
+double targetLats[7] = [100,100,100,100,100,100, 100]; // target received from server
+double targetLons[7] = [100,100,100,100,100,100, 100];
 
 double currentTargetLat; // the target to which the boat is headed currently
 double currentTargetLon;
@@ -67,7 +67,7 @@ double currentHead; // current heading (mag reading)
 
 double currentBatt; // current battery level
 
-int maxNTargets = 6; // check this with Truong******
+int maxNTargets = 7; // check this with Truong******
 
 bool inSession = false;
 
@@ -128,6 +128,7 @@ void setupWiFi() // Wifi module setup
           if (targetLats[i] == 100) {
             targetLats[i] = startLat; // add start value to the end of target list to return to start
             targetLons[i] = startLon;
+            break;
           }
         }
       }
@@ -139,8 +140,6 @@ void setupWiFi() // Wifi module setup
       {
         returnToStart();
       }
-
-      // handling commands from user ie. emergency stop TODO *********
   });
 }
 
@@ -294,6 +293,15 @@ void checkArrival() {
   
 }
 
+// stops the boat when user selects option
+void emergencyStop(){
+
+}
+
+// returns the boat to the start of the trip when the user selects option
+void returnToStart(){
+
+}
 // send json file to the server containing data to be saved in Firebase
 void sendDataToServer() {
   // format into json and send to server as json
