@@ -73,10 +73,10 @@ bool inSession = false;
 bool atTarget = false;
 
 bool isEmergencyStop = false;
-
 bool isReturnToStart = false;
-
 bool isResume = false;
+
+double headCorrectThres = 20; // threshold for number of degrees difference between heading and bearing before auto correcting direction
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP HELPER FUNCTIONS * * * * * * *
 void GPSsetup() // GPS setup
@@ -255,25 +255,44 @@ double getCurrentLon()
   }
 }
 
-double getCurrentHead()
+double getCurrentHead() // TODO ***********
 {
-  return 0;
-  // insert magnetometer code here
+  // magnetometer compass code
+
 }
 
-void headingCorrection() // turn to direction of travel
+void headingCorrection() // turn to direction of travel // TODO ***********
 {
-  double currentBear = getCurrentBear();
-  // turn until currentHead == targetBear
+  stopMotors();
+  double currentBear = getCurrentBear(); // target direction of travel
+
+  if (currentBear - currentHead > headCorrectThres) {
+    while (true) {
+      rightMotors();
+      currentHead = getCurrentHead();
+      if (abs(currentHead - currentBear) < 1) {
+        stopMotors();
+      }
+    }
+  }
+  else if (currentHead - currentBear > headCorrectThres) {
+    while (true) {
+      leftMotors();
+      currentHead = getCurrentHead();
+      if (abs(currentHead - currentBear) < 1) {
+        stopMotors();
+      }
+    }
+  }
 }
 
-// check for objects in the way -- set offset of sensors (left and right, front)
+// check for objects in the way -- set offset of sensors (left and right, front) // TODO ***********
 void objectDetection(int d1, int d2, int d3) {
   
 }
 
 // correct direction for objects
-void avoidObject(int whichSensor) { // input 1,2,3 (left, front, right sensor)
+void avoidObject(int whichSensor) { // input 1,2,3 (left, front, right sensor) // TODO ***********
   backwardsMotors(); // move backward for a couple seconds
   delay(2500);
   stopMotors(); // stop the motors
@@ -281,37 +300,47 @@ void avoidObject(int whichSensor) { // input 1,2,3 (left, front, right sensor)
   // ........
 }
 
-// move forward -- just set the forward pins
+// move forward -- just set the forward pins // TODO ***********
 void forwardMotors() {
   
 }
 
-// stop the motors -- just set the pins
+// stop the motors -- just set the pins // TODO ***********
 void stopMotors() {
   
 }
 
-// move backward (for after running into something) -- just set the pins
+// move backward (for after running into something/object detected) -- just set the pins // TODO ***********
 void backwardMotors() {
   
 }
 
-// ultrasonic sensors get functions
+// turn left -- just set the forward pins // TODO ***********
+void leftMotors() {
+  
+}
+
+// turn right -- just set the forward pins // TODO ***********
+void rightMotors() {
+  
+}
+
+// ultrasonic sensors get functions // TODO ***********
 int getDistance1() { // left
   
 }
 
-int getDistance2() { // front
+int getDistance2() { // front // TODO ***********
   
 }
 
-int getDistance3() { // right
+int getDistance3() { // right // TODO ***********
   
 }
 
-// check whether the boat has arrived to destination
+// check whether the boat has arrived to destination // TODO ***********
 void checkArrival() {
-  
+  // if arrived take measurements set atTarget to 1 (send and set back to 0) and then set new currentTargetLat/Lon
 }
 
 // stops the boat when user selects option
@@ -329,11 +358,16 @@ void emergencyStop(){
     }
   }
 }
-void resume(){
+
+// resume session after emergency stop
+void resume() {
   headingCorrection();
   objectDetection();
   startMotors();
+  isResume = false;
+  isEmergencyStop = false;
 }
+
 // returns the boat to the start of the trip when the user selects option
 void returnToStart(){
   currentTargetLat = startLat;
@@ -341,8 +375,10 @@ void returnToStart(){
   headingCorrection();
   objectDetection();
   startMotors();
-
+  isReturnToStart = false;
+  isEmergencyStop = false;
 }
+
 // send json file to the server containing data to be saved in Firebase
 void sendDataToServer() {
   // format into json and send to server as json
@@ -351,6 +387,7 @@ void sendDataToServer() {
   int httpResponseCode = http.POST(makeJsonString(tempC, currentLat, currentLon, currentHead, currentBatt, currentTargetLat, currentTargetLon, inSession, atTarget));
 }
 
+// format JSON string
 String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, bool inSession, bool atTarget){
     String json = "{\"api_key\":" + 3 + ",
    \"temp\":" + String(temp) + ",
@@ -365,8 +402,6 @@ String makeJsonString(double temp, double curLat, double curLon, double curHead,
             \"curTargetLon\":" + String(curTargetLon) + "}";
   return json;
 }
-// get messages from the server targets, em stop, RTS, resume
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP * * * * * * *
 void setup() {
@@ -409,10 +444,9 @@ void setup() {
 }
 
 
-
 // * * * * * * * * * * * * * * * * * * * * * * * LOOP * * * * * * *
-void loop() { // session has started and targets have been received
-  if (inSession) {
+void loop() { 
+  if (inSession) { // session has started and targets have been received
     currentHead = getCurrentHead();
     currentLat = getCurrentLat();
     currentLon = getCurrentLon();
@@ -422,15 +456,16 @@ void loop() { // session has started and targets have been received
     tempC = getTemperature();
     currentBatt = getCurrentBatt();
   
-  
     headingCorrection(); // turn to bearing if angle between bearing and heading is > threshold
     objectDetection(); // make sure no obstructions are present, if so, correct
-    // *** above functions should make motors move forward if resulting in stop
+
+    if (motors are stopped) { //********* TODO condition that checks if motors are stopped
+      forwardMotors();
+    }
   
     bool arrived = checkArrival(); // check if boat has arrived at target location, if so, take measurement
 
-    sendDataToServer();
-    
+    sendDataToServer(); // send global variables to server
     
     // once session is complete just stop, and send it to an infinite loop to stop main loop
     if (arrived && currentTargetLat == startLat) { // returned to start
@@ -438,6 +473,7 @@ void loop() { // session has started and targets have been received
       targetLats = [100,100,100,100,100,100,100]; // reset targets
       targetLons = [100,100,100,100,100,100,100];
     }
+    delay(100);
   }
   else { // not in session -- for sensor testing
     while (true) {
