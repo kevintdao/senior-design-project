@@ -359,8 +359,10 @@ String makeJsonString(double temp, double curLat, double curLon, double curHead,
       \"curHead\":" + String(curHead) + ",
        \"curBatt\":" + String(curBatt) + ",
         \"curTargetLat\":" + String(curTargetLat) + ",
-         \"inSession\":" + String(inSession) + ",
-          \"curTargetLon\":" + String(curTargetLon) + "}";
+         \"startLat\":" + String(startLat) + ",
+          \"startLong\":" + String(startLong) + ",
+           \"inSession\":" + String(inSession) + ",
+            \"curTargetLon\":" + String(curTargetLon) + "}";
   return json;
 }
 // get messages from the server targets, em stop, RTS, resume
