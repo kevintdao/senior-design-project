@@ -295,7 +295,7 @@ void sendDataToServer() {
 }
 
 
-String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, boolean inSession, boolean atTarget){
+String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, bool inSession, bool atTarget){
     String json = "{\"api_key\":" + 3 + ",
    \"temp\":" + String(temp) + ",
     \"curLat\":" + String(curLat) + ",
