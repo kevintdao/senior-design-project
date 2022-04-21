@@ -266,41 +266,81 @@ double getCurrentHead() // TODO ***********
 void headingCorrection() // turn to direction of travel // TODO ***********
 {
   stopMotors();
+  delay(1000);
   double currentBear = getCurrentBear(); // target direction of travel
 
   if (currentBear - currentHead > headCorrectThres) {
+    rightMotors();
     while (true) {
-      rightMotors();
       currentHead = getCurrentHead();
       if (abs(currentHead - currentBear) < 1) {
         stopMotors();
+        delay(500);
       }
     }
   }
   else if (currentHead - currentBear > headCorrectThres) {
+    leftMotors();
     while (true) {
-      leftMotors();
       currentHead = getCurrentHead();
       if (abs(currentHead - currentBear) < 1) {
         stopMotors();
+        delay(500);
       }
     }
   }
 }
 
 // check for objects in the way -- set offset of sensors (left and right, front) // TODO ***********
-void objectDetection(int d1, int d2, int d3) {
-  
+void objectDetection() {
+  distance1 = getDistance1();
+  distance2 = getDistance2();
+  distance3 = getDistance2();
+  if (distance1 < 25) {
+    avoidObject("left");
+  }
+  else if (distance2 < 25) {
+    avoidObject("front");
+  }
+  else if (distance3 < 25) {
+    avoidObject("right");
+  }
 }
 
 // correct direction for objects
 void avoidObject(String whichSensor) { // string input (left, front, right) // TODO ***********
+  stopMotors();
+  delay(500);
   backwardsMotors(); // move backward for a couple seconds
-  delay(2500);
+  delay(3000);
   stopMotors(); // stop the motors
+  delay(1000);
   // turn (clockwise or counterclock depending on which sensor) until there is no obstruction
-  if (whichSensor == "left") {
-    
+  if (whichSensor == "left" || whichSensor == "front") {
+    rightMotors();
+    while (true) {
+      distance1 = getDistance1();
+      distance2 = getDistance2();
+      distance3 = getDistance2();
+      if (distance1 > 100 && distance2 > 100 && distance3 > 100) { // safe trajectory to proceed
+        stopMotors();
+        delay(1000);
+        forwardMotors();
+      }
+    }
+  }
+  else { // detected by right sensor
+    leftMotors();
+    while (true) {
+      distance1 = getDistance1();
+      distance2 = getDistance2();
+      distance3 = getDistance2();
+      if (distance1 > 100 && distance2 > 100 && distance3 > 100) { // safe trajectory to proceed
+        stopMotors();
+        delay(1000);
+        forwardMotors();
+      }
+    }
   }
 }
 
@@ -350,6 +390,7 @@ void checkArrival() {
 // stops the boat when user selects option
 void emergencyStop(){
   stopMotors();
+  delay(1000);
   while(true){
     pollMessage();
     if(isResume == true)
@@ -373,7 +414,7 @@ void resume() {
 }
 
 // returns the boat to the start of the trip when the user selects option
-void returnToStart(){
+void returnToStart() {
   currentTargetLat = startLat;
   currentTargetLon = startLon;
   headingCorrection();
