@@ -351,7 +351,6 @@ void sendDataToServer() {
   int httpResponseCode = http.POST(makeJsonString(tempC, currentLat, currentLon, currentHead, currentBatt, currentTargetLat, currentTargetLon, inSession, atTarget));
 }
 
-
 String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, bool inSession, bool atTarget){
     String json = "{\"api_key\":" + 3 + ",
    \"temp\":" + String(temp) + ",
@@ -434,8 +433,8 @@ void loop() { // session has started and targets have been received
     // once session is complete just stop, and send it to an infinite loop to stop main loop
     if (arrived && currentTargetLat == startLat) { // returned to start
       inSession = false;
-      targetLats = [100,100,100,100,100,100]; // reset targets
-      targetLons = [100,100,100,100,100,100];
+      targetLats = [100,100,100,100,100,100,100]; // reset targets
+      targetLons = [100,100,100,100,100,100,100];
     }
   }
   else { // not in session -- for sensor testing
