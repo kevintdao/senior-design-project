@@ -388,14 +388,16 @@ int getDistance3() { // right // TODO ***********
 bool checkArrival() {
   // if arrived take measurements set atTarget to 1 (send and set back to 0) and then set new currentTargetLat/Lon
   if (currentTargetDist < 10) {
-    atTarget = true;
-    sendDataToServer();
-    atTarget = false;
+    if (currentTargetLat != startLat) {
+      atTarget = true;
+      stopMotors();
+      sendDataToServer();
+      atTarget = false;
 
-    targetIndex++;
-    currentTargetLat = targetLats[targetIndex]; // proceeding to next target
-    currentTargetLon = targetLons[targetIndex];
-
+      targetIndex++;
+      currentTargetLat = targetLats[targetIndex]; // proceeding to next target
+      currentTargetLon = targetLons[targetIndex];
+    }
     return true;
   }
   return false; // not yet arrived at target
@@ -532,6 +534,7 @@ void loop() {
     
     // once session is complete just stop, and send it to an infinite loop to stop main loop
     if (arrived && currentTargetLat == startLat) { // returned to start
+      stopMotors();
       inSession = false;
       targetLats = [100,100,100,100,100,100,100]; // reset targets
       targetLons = [100,100,100,100,100,100,100];
