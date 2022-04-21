@@ -294,12 +294,14 @@ void objectDetection(int d1, int d2, int d3) {
 }
 
 // correct direction for objects
-void avoidObject(int whichSensor) { // input 1,2,3 (left, front, right sensor) // TODO ***********
+void avoidObject(String whichSensor) { // string input (left, front, right) // TODO ***********
   backwardsMotors(); // move backward for a couple seconds
   delay(2500);
   stopMotors(); // stop the motors
   // turn (clockwise or counterclock depending on which sensor) until there is no obstruction
-  // ........
+  if (whichSensor == "left") {
+    
+  }
 }
 
 // move forward -- just set the forward pins // TODO ***********
