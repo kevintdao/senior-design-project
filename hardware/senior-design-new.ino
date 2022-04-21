@@ -44,7 +44,6 @@ websockets::WebsocketsClient client; // web socket client variable
 HTTPClient http;
 const String serverName = "..../send_data";
 
-
 int distance1;  // distance measurement (ultrasonic sensor variables) - left
 int distance2;  // distance measurement (ultrasonic sensor variables) - front
 int distance3;  // distance measurement (ultrasonic sensor variables) - right
@@ -72,6 +71,12 @@ int maxNTargets = 7; // check this with Truong******
 bool inSession = false;
 
 bool atTarget = false;
+
+bool isEmergencyStop = false;
+
+bool isReturnToStart = false;
+
+bool isResume = false;
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP HELPER FUNCTIONS * * * * * * *
 void GPSsetup() // GPS setup
@@ -134,11 +139,27 @@ void setupWiFi() // Wifi module setup
       }
       if(message.data()["emergency_stop"] == true)
       {
+        isEmergencyStop = true;
         emergencyStop();
+      }
+      else{
+        isEmergencyStop = false;
       }
       if(message.data()["return_to_start"] == true)
       {
+        isReturnToStart = true;
         returnToStart();
+      }
+      else{
+        isReturnToStart = false;
+      }
+      if(message.data()["resume"] == true)
+      {
+        isResume = true;
+        resume();
+      }
+      else{
+        isResume = false;
       }
   });
 }
@@ -295,7 +316,11 @@ void checkArrival() {
 
 // stops the boat when user selects option
 void emergencyStop(){
-
+  stopMotors();
+  while(true){
+    pollMessage();
+    if 
+  }
 }
 
 // returns the boat to the start of the trip when the user selects option
