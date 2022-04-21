@@ -121,8 +121,8 @@ void setupWiFi() // Wifi module setup
         // set marker > 0 > latitude
         for (int i = 0; i < maxNTargets; i++) {
           //set marker > i > latitude/longitude
-          targetLats[i] = 
-          targetLons[i] = 
+          targetLats[i] = message.data()["markers"][i]["latitude"];
+          targetLons[i] = message.data()["markers"][i]["longitude"];
         }
         for (int i = 0; i < maxNTargets; i++) {
           if (targetLats[i] == 100) {
@@ -130,6 +130,14 @@ void setupWiFi() // Wifi module setup
             targetLons[i] = startLon;
           }
         }
+      }
+      if(message.data()["emergency_stop"] == true)
+      {
+        emergencyStop();
+      }
+      if(message.data()["return_to_start"] == true)
+      {
+        returnToStart();
       }
 
       // handling commands from user ie. emergency stop TODO *********
