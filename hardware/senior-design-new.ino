@@ -265,6 +265,11 @@ double getCurrentHead() // TODO ***********
 
 }
 
+float getTemperature()  { // TODO ***************
+  
+
+}
+
 void headingCorrection() // turn to direction of travel
 {
   stopMotors();
@@ -384,6 +389,8 @@ int getDistance3() { // right // TODO ***********
   
 }
 
+
+
 // check whether the boat has arrived to destination
 bool checkArrival() {
   // if arrived take measurements set atTarget to 1 (send and set back to 0) and then set new currentTargetLat/Lon
@@ -449,7 +456,7 @@ void sendDataToServer() {
 }
 
 // format JSON string
-String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, bool inSession, bool atTarget){
+String makeJsonString(float temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, bool inSession, bool atTarget){
     String json = "{\"api_key\":" + 3 + ",
    \"temp\":" + String(temp) + ",
     \"curLat\":" + String(curLat) + ",
