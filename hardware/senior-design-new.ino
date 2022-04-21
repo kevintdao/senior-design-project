@@ -69,9 +69,9 @@ double currentBatt; // current battery level
 
 int maxNTargets = 6; // check this with Truong******
 
-boolean inSession = false;
+bool inSession = false;
 
-boolean atTarget = false;
+bool atTarget = false;
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP HELPER FUNCTIONS * * * * * * *
 void GPSsetup() // GPS setup
@@ -369,7 +369,7 @@ void loop() { // session has started and targets have been received
     objectDetection(); // make sure no obstructions are present, if so, correct
     // *** above functions should make motors move forward if resulting in stop
   
-    boolean arrived = checkArrival(); // check if boat has arrived at target location, if so, take measurement
+    bool arrived = checkArrival(); // check if boat has arrived at target location, if so, take measurement
 
     sendDataToServer();
     
