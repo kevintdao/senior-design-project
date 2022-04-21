@@ -261,7 +261,7 @@ double getCurrentHead()
   // insert magnetometer code here
 }
 
-void headingCorrection(double targetBear) // turn to direction of travel
+void headingCorrection() // turn to direction of travel
 {
   double currentBear = getCurrentBear();
   // turn until currentHead == targetBear
@@ -319,12 +319,28 @@ void emergencyStop(){
   stopMotors();
   while(true){
     pollMessage();
-    if 
+    if(isResume == true)
+    {
+      resume();
+    }
+    else if(isReturnToStart == true)
+    {
+      returnToStart();
+    }
   }
 }
-
+void resume(){
+  headingCorrection();
+  objectDetection();
+  startMotors();
+}
 // returns the boat to the start of the trip when the user selects option
 void returnToStart(){
+  currentTargetLat = startLat;
+  currentTargetLon = startLon;
+  headingCorrection();
+  objectDetection();
+  startMotors();
 
 }
 // send json file to the server containing data to be saved in Firebase
