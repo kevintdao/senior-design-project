@@ -417,6 +417,19 @@ void setup() {
   
   // infinite loop which is broken only if targets are received from the server
   while (true) {
+    startLat = getCurrentLat();
+    startLon = getCurrentLon();
+
+    currentHead = getCurrentHead();
+    currentLat = getCurrentLat();
+    currentLon = getCurrentLon();
+    distance1 = getDistance1();
+    distance2 = getDistance2();
+    distance3 = getDistance3();
+    tempC = getTemperature();
+    currentBatt = getCurrentBatt();
+    currentTargetDist = getDistance(currentLat, currentLon, currentTargetLat, currentTargetLon);
+    
     pollMessage();
     if (targetLats[0] != 100) {
       inSession = true;
@@ -428,17 +441,6 @@ void setup() {
 
   currentTargetLat = targetLats[0];
   currentTargetLon = targetLons[0];
-  startLat = getCurrentLat();
-  startLon = getCurrentLon();
-
-  currentHead = getCurrentHead();
-  currentLat = getCurrentLat();
-  currentLon = getCurrentLon();
-  distance1 = getDistance1();
-  distance2 = getDistance2();
-  distance3 = getDistance3();
-  tempC = getTemperature();
-  currentBatt = getCurrentBatt();
 
 
   headingCorrection(); // turn to bearing
@@ -481,6 +483,19 @@ void loop() {
   }
   else { // not in session -- for sensor testing
     while (true) {
+      startLat = getCurrentLat();
+      startLon = getCurrentLon();
+
+      currentHead = getCurrentHead();
+      currentLat = getCurrentLat();
+      currentLon = getCurrentLon();
+      distance1 = getDistance1();
+      distance2 = getDistance2();
+      distance3 = getDistance3();
+      tempC = getTemperature();
+      currentBatt = getCurrentBatt();
+      currentTargetDist = getDistance(currentLat, currentLon, currentTargetLat, currentTargetLon);
+
       pollMessage();
       if (targetLats[0] != 100) {
         inSession = true;
