@@ -82,6 +82,8 @@ bool isResume = false;
 
 double headCorrectThres = 20; // threshold for number of degrees difference between heading and bearing before auto correcting direction
 
+bool isStopped = true;
+
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP HELPER FUNCTIONS * * * * * * *
 void GPSsetup() // GPS setup
 {
@@ -332,7 +334,7 @@ void avoidObject(String whichSensor) { // string input (left, front, right) // T
       if (distance1 > 100 && distance2 > 100 && distance3 > 100) { // safe trajectory to proceed
         stopMotors();
         delay(1000);
-        forwardMotors();
+        break;
       }
     }
   }
@@ -345,7 +347,7 @@ void avoidObject(String whichSensor) { // string input (left, front, right) // T
       if (distance1 > 100 && distance2 > 100 && distance3 > 100) { // safe trajectory to proceed
         stopMotors();
         delay(1000);
-        forwardMotors();
+        break;
       }
     }
   }
@@ -353,27 +355,31 @@ void avoidObject(String whichSensor) { // string input (left, front, right) // T
 
 // move forward -- just set the forward pins // TODO ***********
 void forwardMotors() {
-  
+  isStopped = false;
 }
 
 // stop the motors -- just set the pins // TODO ***********
 void stopMotors() {
-  
+  isStopped = true;
+  // .....
 }
 
 // move backward (for after running into something/object detected) -- just set the pins // TODO ***********
 void backwardMotors() {
+  isStopped = false;
   
 }
 
 // turn left -- just set the forward pins // TODO ***********
 void leftMotors() {
+  isStopped = false;
   
 }
 
 // turn right -- just set the forward pins // TODO ***********
 void rightMotors() {
-  
+  isStopped = false;
+
 }
 
 // ultrasonic sensors get functions // TODO ***********
@@ -531,7 +537,7 @@ void loop() {
     headingCorrection(); // turn to bearing if angle between bearing and heading is > threshold
     objectDetection(); // make sure no obstructions are present, if so, correct
 
-    if (motors are stopped) { //********* TODO condition that checks if motors are stopped
+    if (isStopped) { 
       forwardMotors();
     }
   
