@@ -49,7 +49,8 @@ export default function StartSessionScreen ({ navigation }) {
         latitude: boat.latitude,
         longitude: boat.longitude
       },
-      markers: allMarkers
+      markers: allMarkers,
+      in_session: true
     })
 
     navigation.navigate("NewSessionScreen", { 
@@ -95,7 +96,7 @@ export default function StartSessionScreen ({ navigation }) {
       </MapView>
       <View style={tw`mt-2 items-center`}>
         <Text style={tw`text-3xl font-bold`}>New Session</Text>
-        <Text style={tw``}>{`${markers.length}/${maxMarkers}`}</Text>
+        <Text style={tw``}>{`Markers: ${markers.length}/${maxMarkers}`}</Text>
       </View>
 
       <View style={tw`w-4/5 max-w-md`}> 
