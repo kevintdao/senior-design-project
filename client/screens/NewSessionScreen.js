@@ -30,7 +30,7 @@ export default function NewSessionScreen(props) {
       in_session: false
     })
     
-    navigation.navigate("StartSessionScreen")
+    navigation.navigate("HomeScreen")
   }
 
   if (!boat) return <Loading />
