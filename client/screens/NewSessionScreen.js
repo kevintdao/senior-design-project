@@ -9,6 +9,7 @@ import Indicator from '../components/Indicator'
 
 export default function NewSessionScreen(props) {
   const markers = props.route.params.markers;
+  const navigation = props.navigation
   const [boat, setBoat] = useState()
   const rtRef = ref(rtdb)
 
@@ -22,6 +23,14 @@ export default function NewSessionScreen(props) {
     update(rtRef, {
       emergency_stop: !boat.emergency_stop
     })
+  }
+
+  const stopSession = () => {
+    update(rtRef, {
+      in_session: false
+    })
+    
+    navigation.navigate("HomeScreen")
   }
 
   if (!boat) return <Loading />
@@ -74,6 +83,7 @@ export default function NewSessionScreen(props) {
       <View style={tw`w-4/5 max-w-md`}> 
         <TouchableOpacity 
           style={tw`bg-blue-600 mb-3 items-center rounded p-3`}
+          onPress={stopSession}
         >
           <Text style={tw`text-white text-lg`}>Return to Start</Text>
         </TouchableOpacity>
