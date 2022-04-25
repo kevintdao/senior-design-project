@@ -194,14 +194,6 @@ void setupMotor() // Motors setup ------ Needs to be edited along with the motor
  ledcAttachPin(en2, 1);
 }
 
-//void setupMotor() // Motors setup
-//{
-//  pinMode(motor1pin1, OUTPUT);
-//  pinMode(motor1pin2, OUTPUT);
-//  pinMode(motor2pin1, OUTPUT);
-//  pinMode(motor2pin2, OUTPUT);
-//}
-
 // * * * * * * * * * * * * * * * * * * * * * * * OTHER HELPER FUNCTIONS * * * * * * *
 void pollMessage() // Poll the web client
 {
