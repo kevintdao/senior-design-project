@@ -12,10 +12,12 @@
 
 // * * * * * * * * * * * * * * * * * * * * * * * PIN VALUES * * * * * * * 
 // motor pins
-const int motor1pin1 = 5; // CHANGE THESE*********
-const int motor1pin2 = 6;
-const int motor2pin1 = 9;
-const int motor2pin2 = 8;
+const int motor1pin1 = 26; // CHANGE THESE*********
+const int motor1pin2 = 27;
+const int motor2pin1 = 12;
+const int motor2pin2 = 13;
+const int en1 = 25; // does not work
+const int en2 = 14; // does not work
 
 // GPS pins
 static const int RXPin = 9;
@@ -170,27 +172,27 @@ void setupWiFi() // Wifi module setup
   });
 }
 
-//void setupMotor() // Motors setup ------ Needs to be edited along with the motor pins
-//{
-//  const int freq = 30000;
-//  const int resolution = 10;
-//  
-//  // sets the pins as outputs:
-//  pinMode(motor1pin1, OUTPUT);
-//  pinMode(motor1pin2, OUTPUT);
-//  pinMode(en1, OUTPUT);
-//  pinMode(motor2pin1, OUTPUT);
-//  pinMode(motor2pin2, OUTPUT);
-//  pinMode(en2, OUTPUT);
-//
-//  // configure LED PWM functionalitites
-//  ledcSetup(0, freq, resolution);
-//  ledcSetup(1, freq, resolution);
-//
-//  // attach the channel to the GPIO to be controlled
-//  ledcAttachPin(en1, 0);
-//  ledcAttachPin(en2, 1);
-//}
+void setupMotor() // Motors setup ------ Needs to be edited along with the motor pins
+{
+ const int freq = 30000;
+ const int resolution = 10;
+ 
+ // sets the pins as outputs:
+ pinMode(motor1pin1, OUTPUT);
+ pinMode(motor1pin2, OUTPUT);
+ pinMode(en1, OUTPUT);
+ pinMode(motor2pin1, OUTPUT);
+ pinMode(motor2pin2, OUTPUT);
+ pinMode(en2, OUTPUT);
+
+ // configure LED PWM functionalitites
+ ledcSetup(0, freq, resolution);
+ ledcSetup(1, freq, resolution);
+
+ // attach the channel to the GPIO to be controlled
+ ledcAttachPin(en1, 0);
+ ledcAttachPin(en2, 1);
+}
 
 //void setupMotor() // Motors setup
 //{
@@ -356,30 +358,48 @@ void avoidObject(String whichSensor) { // string input (left, front, right) // T
 // move forward -- just set the forward pins // TODO ***********
 void forwardMotors() {
   isStopped = false;
+  digitalWrite(motor1pin1, HIGH);
+  digitalWrite(motor1pin2, LOW);
+  delay(1000);
+
+  digitalWrite(motor2pin1, HIGH);
+  digitalWrite(motor2pin2, LOW);
 }
 
 // stop the motors -- just set the pins // TODO ***********
 void stopMotors() {
   isStopped = true;
-  // .....
+  digitalWrite(motor1pin1, LOW);
+  digitalWrite(motor1pin2, LOW);
+  digitalWrite(motor2pin1, LOW);
+  digitalWrite(motor2pin2, LOW);
 }
 
 // move backward (for after running into something/object detected) -- just set the pins // TODO ***********
 void backwardMotors() {
   isStopped = false;
-  
+  digitalWrite(motor1pin1, LOW);
+  digitalWrite(motor1pin2, HIGH);
+  digitalWrite(motor2pin1, LOW);
+  digitalWrite(motor2pin2, HIGH);
 }
 
 // turn left -- just set the forward pins // TODO ***********
 void leftMotors() {
   isStopped = false;
-  
+  digitalWrite(motor1pin1, HIGH);
+  digitalWrite(motor1pin2, LOW);
+  digitalWrite(motor2pin1, LOW);
+  digitalWrite(motor2pin2, LOW);
 }
 
 // turn right -- just set the forward pins // TODO ***********
 void rightMotors() {
   isStopped = false;
-
+  digitalWrite(motor1pin1, LOW);
+  digitalWrite(motor1pin2, LOW);
+  digitalWrite(motor2pin1, LOW);
+  digitalWrite(motor2pin2, HIGH);
 }
 
 // ultrasonic sensors get functions // TODO ***********
@@ -513,11 +533,6 @@ void setup() {
 
   currentTargetLat = targetLats[0];
   currentTargetLon = targetLons[0];
-
-
-  headingCorrection(); // turn to bearing
-  objectDetection(); // make sure no obstructions are present, if so, correct
-  forwardMotors(); // move forward
 }
 
 
