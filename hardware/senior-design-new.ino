@@ -200,7 +200,7 @@ void setupMotors() // Motors setup
 }
 
 void setupBatteryReading(){
-  pinMode(batteryPin, INPUT)
+  pinMode(batteryPin, INPUT);
 }
 
 void setupMag() //setup magnetometer \\ TODO ***********
