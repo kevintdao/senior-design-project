@@ -12,10 +12,12 @@
 
 // * * * * * * * * * * * * * * * * * * * * * * * PIN VALUES * * * * * * * 
 // motor pins
-const int motor1pin1 = 5; // CHANGE THESE*********
-const int motor1pin2 = 6;
-const int motor2pin1 = 9;
-const int motor2pin2 = 8;
+const int motor1pin1 = 26; // CHANGE THESE*********
+const int motor1pin2 = 27;
+const int motor2pin1 = 12;
+const int motor2pin2 = 13;
+const int en1 = 25; // does not work
+const int en2 = 14; // does not work
 
 // GPS pins
 static const int RXPin = 9;
@@ -50,8 +52,8 @@ int distance3;  // distance measurement (ultrasonic sensor variables) - right
 
 int dutyCycle = 255; // motor duty cycle variable
 
-double targetLats[7] = [100,100,100,100,100,100, 100]; // target received from server
-double targetLons[7] = [100,100,100,100,100,100, 100];
+double targetLats[7] = [100,100,100,100,100,100,100]; // target received from server
+double targetLons[7] = [100,100,100,100,100,100,100];
 
 double currentTargetLat; // the target to which the boat is headed currently
 double currentTargetLon;
@@ -66,17 +68,23 @@ double currentHead; // current heading (mag reading)
 
 double currentBatt; // current battery level
 
-int maxNTargets = 7; // check this with Truong******
+double currentTargetDist; // distance to current target
+
+int maxNTargets = 7; // max user entered = 6 plus a space for the starting point
+
+int targetIndex = 0; // on way to first target
 
 bool inSession = false;
 
 bool atTarget = false;
 
 bool isEmergencyStop = false;
-
 bool isReturnToStart = false;
-
 bool isResume = false;
+
+double headCorrectThres = 20; // threshold for number of degrees difference between heading and bearing before auto correcting direction
+
+bool isStopped = true;
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP HELPER FUNCTIONS * * * * * * *
 void GPSsetup() // GPS setup
@@ -164,35 +172,27 @@ void setupWiFi() // Wifi module setup
   });
 }
 
-//void setupMotor() // Motors setup ------ Needs to be edited along with the motor pins
-//{
-//  const int freq = 30000;
-//  const int resolution = 10;
-//  
-//  // sets the pins as outputs:
-//  pinMode(motor1pin1, OUTPUT);
-//  pinMode(motor1pin2, OUTPUT);
-//  pinMode(en1, OUTPUT);
-//  pinMode(motor2pin1, OUTPUT);
-//  pinMode(motor2pin2, OUTPUT);
-//  pinMode(en2, OUTPUT);
-//
-//  // configure LED PWM functionalitites
-//  ledcSetup(0, freq, resolution);
-//  ledcSetup(1, freq, resolution);
-//
-//  // attach the channel to the GPIO to be controlled
-//  ledcAttachPin(en1, 0);
-//  ledcAttachPin(en2, 1);
-//}
+void setupMotor() // Motors setup ------ Needs to be edited along with the motor pins
+{
+ const int freq = 30000;
+ const int resolution = 10;
+ 
+ // sets the pins as outputs:
+ pinMode(motor1pin1, OUTPUT);
+ pinMode(motor1pin2, OUTPUT);
+ pinMode(en1, OUTPUT);
+ pinMode(motor2pin1, OUTPUT);
+ pinMode(motor2pin2, OUTPUT);
+ pinMode(en2, OUTPUT);
 
-//void setupMotor() // Motors setup
-//{
-//  pinMode(motor1pin1, OUTPUT);
-//  pinMode(motor1pin2, OUTPUT);
-//  pinMode(motor2pin1, OUTPUT);
-//  pinMode(motor2pin2, OUTPUT);
-//}
+ // configure LED PWM functionalitites
+ ledcSetup(0, freq, resolution);
+ ledcSetup(1, freq, resolution);
+
+ // attach the channel to the GPIO to be controlled
+ ledcAttachPin(en1, 0);
+ ledcAttachPin(en2, 1);
+}
 
 // * * * * * * * * * * * * * * * * * * * * * * * OTHER HELPER FUNCTIONS * * * * * * *
 void pollMessage() // Poll the web client
@@ -255,68 +255,183 @@ double getCurrentLon()
   }
 }
 
-double getCurrentHead()
+double getCurrentHead() // TODO ***********
 {
-  return 0;
-  // insert magnetometer code here
+  // magnetometer compass code
+
+}
+
+float getTemperature()  { // TODO ***************
+  
+
 }
 
 void headingCorrection() // turn to direction of travel
 {
-  double currentBear = getCurrentBear();
-  // turn until currentHead == targetBear
+  stopMotors();
+  delay(1000);
+  double currentBear = getCurrentBear(); // target direction of travel
+
+  if (currentBear - currentHead > headCorrectThres) {
+    rightMotors();
+    while (true) {
+      currentHead = getCurrentHead();
+      if (abs(currentHead - currentBear) < 1) {
+        stopMotors();
+        delay(500);
+      }
+    }
+  }
+  else if (currentHead - currentBear > headCorrectThres) {
+    leftMotors();
+    while (true) {
+      currentHead = getCurrentHead();
+      if (abs(currentHead - currentBear) < 1) {
+        stopMotors();
+        delay(500);
+      }
+    }
+  }
 }
 
 // check for objects in the way -- set offset of sensors (left and right, front)
-void objectDetection(int d1, int d2, int d3) {
-  
+void objectDetection() {
+  distance1 = getDistance1();
+  distance2 = getDistance2();
+  distance3 = getDistance2();
+  if (distance1 < 25) {
+    avoidObject("left");
+  }
+  else if (distance2 < 25) {
+    avoidObject("front");
+  }
+  else if (distance3 < 25) {
+    avoidObject("right");
+  }
 }
 
 // correct direction for objects
-void avoidObject(int whichSensor) { // input 1,2,3 (left, front, right sensor)
+void avoidObject(String whichSensor) { // string input (left, front, right) // TODO ***********
+  stopMotors();
+  delay(500);
   backwardsMotors(); // move backward for a couple seconds
-  delay(2500);
+  delay(3000);
   stopMotors(); // stop the motors
+  delay(1000);
   // turn (clockwise or counterclock depending on which sensor) until there is no obstruction
-  // ........
+  if (whichSensor == "left" || whichSensor == "front") {
+    rightMotors();
+    while (true) {
+      distance1 = getDistance1();
+      distance2 = getDistance2();
+      distance3 = getDistance2();
+      if (distance1 > 100 && distance2 > 100 && distance3 > 100) { // safe trajectory to proceed
+        stopMotors();
+        delay(1000);
+        break;
+      }
+    }
+  }
+  else { // detected by right sensor
+    leftMotors();
+    while (true) {
+      distance1 = getDistance1();
+      distance2 = getDistance2();
+      distance3 = getDistance2();
+      if (distance1 > 100 && distance2 > 100 && distance3 > 100) { // safe trajectory to proceed
+        stopMotors();
+        delay(1000);
+        break;
+      }
+    }
+  }
 }
 
-// move forward -- just set the forward pins
+// move forward -- just set the forward pins // TODO ***********
 void forwardMotors() {
-  
+  isStopped = false;
+  digitalWrite(motor1pin1, HIGH);
+  digitalWrite(motor1pin2, LOW);
+  delay(1000);
+
+  digitalWrite(motor2pin1, HIGH);
+  digitalWrite(motor2pin2, LOW);
 }
 
-// stop the motors -- just set the pins
+// stop the motors -- just set the pins // TODO ***********
 void stopMotors() {
-  
+  isStopped = true;
+  digitalWrite(motor1pin1, LOW);
+  digitalWrite(motor1pin2, LOW);
+  digitalWrite(motor2pin1, LOW);
+  digitalWrite(motor2pin2, LOW);
 }
 
-// move backward (for after running into something) -- just set the pins
+// move backward (for after running into something/object detected) -- just set the pins // TODO ***********
 void backwardMotors() {
-  
+  isStopped = false;
+  digitalWrite(motor1pin1, LOW);
+  digitalWrite(motor1pin2, HIGH);
+  digitalWrite(motor2pin1, LOW);
+  digitalWrite(motor2pin2, HIGH);
 }
 
-// ultrasonic sensors get functions
+// turn left -- just set the forward pins // TODO ***********
+void leftMotors() {
+  isStopped = false;
+  digitalWrite(motor1pin1, HIGH);
+  digitalWrite(motor1pin2, LOW);
+  digitalWrite(motor2pin1, LOW);
+  digitalWrite(motor2pin2, LOW);
+}
+
+// turn right -- just set the forward pins // TODO ***********
+void rightMotors() {
+  isStopped = false;
+  digitalWrite(motor1pin1, LOW);
+  digitalWrite(motor1pin2, LOW);
+  digitalWrite(motor2pin1, LOW);
+  digitalWrite(motor2pin2, HIGH);
+}
+
+// ultrasonic sensors get functions // TODO ***********
 int getDistance1() { // left
   
 }
 
-int getDistance2() { // front
+int getDistance2() { // front // TODO ***********
   
 }
 
-int getDistance3() { // right
+int getDistance3() { // right // TODO ***********
   
 }
+
+
 
 // check whether the boat has arrived to destination
-void checkArrival() {
-  
+bool checkArrival() {
+  // if arrived take measurements set atTarget to 1 (send and set back to 0) and then set new currentTargetLat/Lon
+  if (currentTargetDist < 10) {
+    if (currentTargetLat != startLat) {
+      atTarget = true;
+      stopMotors();
+      sendDataToServer();
+      atTarget = false;
+
+      targetIndex++;
+      currentTargetLat = targetLats[targetIndex]; // proceeding to next target
+      currentTargetLon = targetLons[targetIndex];
+    }
+    return true;
+  }
+  return false; // not yet arrived at target
 }
 
 // stops the boat when user selects option
 void emergencyStop(){
   stopMotors();
+  delay(1000);
   while(true){
     pollMessage();
     if(isResume == true)
@@ -329,20 +444,27 @@ void emergencyStop(){
     }
   }
 }
-void resume(){
+
+// resume session after emergency stop
+void resume() {
   headingCorrection();
   objectDetection();
   startMotors();
+  isResume = false;
+  isEmergencyStop = false;
 }
+
 // returns the boat to the start of the trip when the user selects option
-void returnToStart(){
+void returnToStart() {
   currentTargetLat = startLat;
   currentTargetLon = startLon;
   headingCorrection();
   objectDetection();
   startMotors();
-
+  isReturnToStart = false;
+  isEmergencyStop = false;
 }
+
 // send json file to the server containing data to be saved in Firebase
 void sendDataToServer() {
   // format into json and send to server as json
@@ -351,7 +473,8 @@ void sendDataToServer() {
   int httpResponseCode = http.POST(makeJsonString(tempC, currentLat, currentLon, currentHead, currentBatt, currentTargetLat, currentTargetLon, inSession, atTarget));
 }
 
-String makeJsonString(double temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, bool inSession, bool atTarget){
+// format JSON string
+String makeJsonString(float temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, bool inSession, bool atTarget){
     String json = "{\"api_key\":" + 3 + ",
    \"temp\":" + String(temp) + ",
     \"curLat\":" + String(curLat) + ",
@@ -362,11 +485,10 @@ String makeJsonString(double temp, double curLat, double curLon, double curHead,
          \"startLat\":" + String(startLat) + ",
           \"startLong\":" + String(startLon) + ",
            \"inSession\":" + String(inSession) + ",
+            \"currentTargetDist\":" + String(currentTargetDist) + ",
             \"curTargetLon\":" + String(curTargetLon) + "}";
   return json;
 }
-// get messages from the server targets, em stop, RTS, resume
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP * * * * * * *
 void setup() {
@@ -379,6 +501,19 @@ void setup() {
   
   // infinite loop which is broken only if targets are received from the server
   while (true) {
+    startLat = getCurrentLat();
+    startLon = getCurrentLon();
+
+    currentHead = getCurrentHead();
+    currentLat = getCurrentLat();
+    currentLon = getCurrentLon();
+    distance1 = getDistance1();
+    distance2 = getDistance2();
+    distance3 = getDistance3();
+    tempC = getTemperature();
+    currentBatt = getCurrentBatt();
+    currentTargetDist = getDistance(currentLat, currentLon, currentTargetLat, currentTargetLon);
+    
     pollMessage();
     if (targetLats[0] != 100) {
       inSession = true;
@@ -390,29 +525,12 @@ void setup() {
 
   currentTargetLat = targetLats[0];
   currentTargetLon = targetLons[0];
-  startLat = getCurrentLat();
-  startLon = getCurrentLon();
-
-  currentHead = getCurrentHead();
-  currentLat = getCurrentLat();
-  currentLon = getCurrentLon();
-  distance1 = getDistance1();
-  distance2 = getDistance2();
-  distance3 = getDistance3();
-  tempC = getTemperature();
-  currentBatt = getCurrentBatt();
-
-
-  headingCorrection(); // turn to bearing
-  objectDetection(); // make sure no obstructions are present, if so, correct
-  forwardMotors(); // move forward
 }
 
 
-
 // * * * * * * * * * * * * * * * * * * * * * * * LOOP * * * * * * *
-void loop() { // session has started and targets have been received
-  if (inSession) {
+void loop() { 
+  if (inSession) { // session has started and targets have been received
     currentHead = getCurrentHead();
     currentLat = getCurrentLat();
     currentLon = getCurrentLon();
@@ -421,26 +539,43 @@ void loop() { // session has started and targets have been received
     distance3 = getDistance3();
     tempC = getTemperature();
     currentBatt = getCurrentBatt();
-  
+    currentTargetDist = getDistance(currentLat, currentLon, currentTargetLat, currentTargetLon);
   
     headingCorrection(); // turn to bearing if angle between bearing and heading is > threshold
     objectDetection(); // make sure no obstructions are present, if so, correct
-    // *** above functions should make motors move forward if resulting in stop
+
+    if (isStopped) { 
+      forwardMotors();
+    }
   
     bool arrived = checkArrival(); // check if boat has arrived at target location, if so, take measurement
 
-    sendDataToServer();
-    
+    sendDataToServer(); // send global variables to server
     
     // once session is complete just stop, and send it to an infinite loop to stop main loop
     if (arrived && currentTargetLat == startLat) { // returned to start
+      stopMotors();
       inSession = false;
       targetLats = [100,100,100,100,100,100,100]; // reset targets
       targetLons = [100,100,100,100,100,100,100];
     }
+    delay(100);
   }
   else { // not in session -- for sensor testing
     while (true) {
+      startLat = getCurrentLat();
+      startLon = getCurrentLon();
+
+      currentHead = getCurrentHead();
+      currentLat = getCurrentLat();
+      currentLon = getCurrentLon();
+      distance1 = getDistance1();
+      distance2 = getDistance2();
+      distance3 = getDistance3();
+      tempC = getTemperature();
+      currentBatt = getCurrentBatt();
+      currentTargetDist = getDistance(currentLat, currentLon, currentTargetLat, currentTargetLon);
+
       pollMessage();
       if (targetLats[0] != 100) {
         inSession = true;
