@@ -21,7 +21,7 @@ const WebSocket = require('ws');
 const wss = new WebSocket.Server({ server: server })
 const port = process.env.PORT || 3000
 
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
@@ -40,13 +40,14 @@ ref.on('value', snapshot => {
 // send hardware data to Firebase
 app.post('/send_data', (req, res) => {
   const body = req.body;
+  console.log(body)
   const time = admin.firestore.Timestamp.fromDate(new Date())
   ref.update({
-    battery: body.curBatt,
-    temperature: body.temp,
+    battery: parseInt(body.curBatt),
+    temperature: parseInt(body.temp),
     start: {
-      latitude: body.curLat,
-      longtitude: body.curLon
+      latitude: parseInt(body.curLat),
+      longtitude: parseInt(body.curLon)
     },
     timestamp: time.toDate()
   })
