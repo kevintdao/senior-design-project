@@ -32,21 +32,28 @@ app.get('/', (req, res) => {
 })
 
 const ref = realtimeDB.ref('/')
-// send hardware data to Firebase
-app.post('/send_data', (req, res) => {
-  const time = admin.firestore.Timestamp.fromDate(new Date())
-  ref.update({
-    battery: 90,
-    timestamp: time.toDate()
-  })
-  res.send('done')
-})
 
-// send Firebase data to hardware
 var data;
 ref.on('value', snapshot => {
   data = snapshot.val()
 })
+// send hardware data to Firebase
+app.post('/send_data', (req, res) => {
+  const body = req.body;
+  const time = admin.firestore.Timestamp.fromDate(new Date())
+  ref.update({
+    battery: body.curBatt,
+    temperature: body.temp,
+    start: {
+      latitude: body.curLat,
+      longtitude: body.curLon
+    },
+    timestamp: time.toDate()
+  })
+  res.send(data)
+})
+
+// send Firebase data to hardware
 app.get('/get_data', (req, res) => {
   res.send(data)
 })
