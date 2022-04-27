@@ -2,10 +2,10 @@ require('dotenv').config()
 const express = require('express')
 var admin = require("firebase-admin");
 
-var serviceAccount = require("./service-account.json") || undefined;
+var serviceAccount = require("./service-account.json")
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount || JSON.parse(process.env.GOOGLE_CREDENTIALS)),
+  credential: admin.credential.cert(serviceAccount),
   databaseURL: 'https://senior-design-project-ceb4f-default-rtdb.firebaseio.com/'
 });
 
