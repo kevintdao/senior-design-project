@@ -30,7 +30,8 @@ const int trigPin[3] = {32, 1, 18};
 // Temperature pins
 const int tmpPin = 33;
 
-
+// Battery pins
+const int batteryPin = 13; //replace with correct pin
 
 // * * * * * * * * * * * * * * * * * * * * * * * VARIABLES * * * * * * * 
 OneWire oneWire(tmpPin);
@@ -196,6 +197,10 @@ void setupMotors() // Motors setup
  // attach the channel to the GPIO to be controlled
  ledcAttachPin(en1, 0);
  ledcAttachPin(en2, 1);
+}
+
+void setupBatteryReading(){
+  pinMode(batteryPin, INPUT)
 }
 
 void setupMag() //setup magnetometer \\ TODO ***********
@@ -438,8 +443,9 @@ int getDistance3() { // right
   return distance3;
 }
 
-int getCurrentBatt() { // battery-level \\ TODO ********
-  return 0;
+//reads voltage pin
+int getCurrentBatt() { // battery-level 
+  return analogRead(batteryPin);
 }
 
 // check whether the boat has arrived to destination
@@ -531,7 +537,7 @@ void setup() {
   setupUltra(); // setup ultrasonic sensors
   setupMotors(); // setup motors
   setupWifi();  // setup wifi connection + receiving messages from the server
-  
+  setupBatteryReading(); // sets up battery pins
   // infinite loop which is broken only if targets are received from the server
   while (true) {
     startLat = getCurrentLat();
