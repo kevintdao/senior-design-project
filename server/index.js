@@ -6,7 +6,7 @@ var serviceAccount = require("./service-account.json");
 
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(serviceAccount || process.env.GOOGLE_CREDENTIALS),
   databaseURL: 'https://senior-design-project-ceb4f-default-rtdb.firebaseio.com/'
 });
 
