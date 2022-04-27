@@ -12,7 +12,7 @@
 
 // * * * * * * * * * * * * * * * * * * * * * * * PIN VALUES * * * * * * * 
 // motor pins
-const int motor1pin1 = 26; // CHANGE THESE*********
+const int motor1pin1 = 26;
 const int motor1pin2 = 27;
 const int motor2pin1 = 12;
 const int motor2pin2 = 13;
@@ -23,9 +23,9 @@ const int en2 = 14; // does not work
 static const int RXPin = 9;
 static const int TXPin = 10;
 
-// Ultrasonic-Sensor HC-SR04 pins
-const int echoPin = 35;
-const int trigPin = 32;
+// Ultrasonic-Sensor HC-SR04 pin setup and loop
+const int echoPin[3] = {35, 23, 19};
+const int trigPin[3] = {32, 1, 18};
 
 // Temperature pins
 const int tmpPin = 33;
@@ -49,11 +49,12 @@ const String serverName = "..../send_data";
 int distance1;  // distance measurement (ultrasonic sensor variables) - left
 int distance2;  // distance measurement (ultrasonic sensor variables) - front
 int distance3;  // distance measurement (ultrasonic sensor variables) - right
+float duration; // for distances
 
 int dutyCycle = 255; // motor duty cycle variable
 
-double targetLats[7] = [100,100,100,100,100,100,100]; // target received from server
-double targetLons[7] = [100,100,100,100,100,100,100];
+double targetLats[7] = {100,100,100,100,100,100,100}; // target received from server
+double targetLons[7] = {100,100,100,100,100,100,100};
 
 double currentTargetLat; // the target to which the boat is headed currently
 double currentTargetLon;
@@ -95,8 +96,10 @@ void GPSsetup() // GPS setup
 
 void setupUltra() // Ultrasonic sensor setup
 {
-  pinMode(echoPin, INPUT);
-  pinMode(trigPin, OUTPUT);
+  for (int i = 0; i < 3; i++) {
+    pinMode(echoPin[i], INPUT);
+    pinMode(trigPin[i], OUTPUT);
+  }
 }
 
 void setupTemp() // Temp sensor setup
@@ -104,7 +107,7 @@ void setupTemp() // Temp sensor setup
   sensors.begin();
 }
 
-void setupWiFi() // Wifi module setup
+void setupWifi() // Wifi module setup
 {
   const char *ssid = "ssid";
   const char *password = "pass";
@@ -130,12 +133,13 @@ void setupWiFi() // Wifi module setup
 
   // run callback when messages are received
   client.onMessage([&](websockets::WebsocketsMessage message){
+      JSONVar parser = JSON.parse(message.data());
       if (targetLats[0] == 100) {
         // set marker > 0 > latitude
         for (int i = 0; i < maxNTargets; i++) {
           //set marker > i > latitude/longitude
-          targetLats[i] = message.data()["markers"][i]["latitude"];
-          targetLons[i] = message.data()["markers"][i]["longitude"];
+          targetLats[i] = (double) parser["markers"][String(i)]["latitude"];
+          targetLons[i] = (double) parser["markers"][String(i)]["longitude"];
         }
         for (int i = 0; i < maxNTargets; i++) {
           if (targetLats[i] == 100) {
@@ -145,7 +149,7 @@ void setupWiFi() // Wifi module setup
           }
         }
       }
-      if(message.data()["emergency_stop"] == true)
+      if((bool) parser["emergency_stop"] == true)
       {
         isEmergencyStop = true;
         emergencyStop();
@@ -153,7 +157,7 @@ void setupWiFi() // Wifi module setup
       else{
         isEmergencyStop = false;
       }
-      if(message.data()["return_to_start"] == true)
+      if((bool) parser["return_to_start"] == true)
       {
         isReturnToStart = true;
         returnToStart();
@@ -161,7 +165,7 @@ void setupWiFi() // Wifi module setup
       else{
         isReturnToStart = false;
       }
-      if(message.data()["resume"] == true)
+      if((bool) parser["resume"] == true)
       {
         isResume = true;
         resume();
@@ -172,7 +176,7 @@ void setupWiFi() // Wifi module setup
   });
 }
 
-void setupMotor() // Motors setup ------ Needs to be edited along with the motor pins
+void setupMotors() // Motors setup
 {
  const int freq = 30000;
  const int resolution = 10;
@@ -194,6 +198,10 @@ void setupMotor() // Motors setup ------ Needs to be edited along with the motor
  ledcAttachPin(en2, 1);
 }
 
+void setupMag() //setup magnetometer \\ TODO ***********
+{
+  
+}
 // * * * * * * * * * * * * * * * * * * * * * * * OTHER HELPER FUNCTIONS * * * * * * *
 void pollMessage() // Poll the web client
 {
@@ -204,28 +212,28 @@ void pollMessage() // Poll the web client
 }
 
 // calculate direction of travel in degrees (arg units -- degrees)
-double getBearing(double currentLat, double currentLon, double targetLat, double targetLon)
+double getBearing(double currLat, double currLon, double targetLat, double targetLon)
 {
-  currentLat = currentLat * PI / 180; // convert to radians
-  currentLon = currentLon * PI / 180;
+  currLat = currLat * PI / 180; // convert to radians
+  currLon = currLon * PI / 180;
   targetLat = targetLat * PI / 180;
   targetLon = targetLon * PI / 180;
   double x = cos(targetLat) * sin(targetLon - currentLon);
-  double y = (cos(currentLat) * sin(targetLat)) - (sin(currentLat) * cos(targetLat) * cos(targetLon - currentLon));
+  double y = (cos(currLat) * sin(targetLat)) - (sin(currLat) * cos(targetLat) * cos(targetLon - currLon));
   double b = atan2(x, y) * 180 / PI; // convert back to degrees
   return b;
 }
 
 // calculate distance to target in meters
-double getDistance(double currentLat, double currentLon, double targetLat, double targetLon)
+double getDistance(double currLat, double currLon, double targetLat, double targetLon)
 {
-  currentLat = currentLat * PI / 180; // convert to radians
-  currentLon = currentLon * PI / 180;
+  currLat = currLat * PI / 180; // convert to radians
+  currLon = currLon * PI / 180;
   targetLat = targetLat * PI / 180;
   targetLon = targetLon * PI / 180;
-  double deltaLat = targetLat - currentLat;
-  double deltaLon = targetLon - currentLon;
-  double a = pow(sin(deltaLat / 2), 2) + (cos(currentLat) * cos(targetLat) * pow(sin(deltaLon / 2), 2));
+  double deltaLat = targetLat - currLat;
+  double deltaLon = targetLon - currLon;
+  double a = pow(sin(deltaLat / 2), 2) + (cos(currLat) * cos(targetLat) * pow(sin(deltaLon / 2), 2));
   double c = 2 * atan2(sqrt(a), sqrt(1 - a));
   double d = c * 6371000;
   return d;
@@ -261,16 +269,17 @@ double getCurrentHead() // TODO ***********
 
 }
 
-float getTemperature()  { // TODO ***************
-  
+float getTemperature()  {
+  sensors.requestTemperatures();
 
+  return sensors.getTempCByIndex(0);
 }
 
 void headingCorrection() // turn to direction of travel
 {
   stopMotors();
   delay(1000);
-  double currentBear = getCurrentBear(); // target direction of travel
+  double currentBear = getBearing(currentLat, currentLon, currentTargetLat, currentTargetLon); // target direction of travel
 
   if (currentBear - currentHead > headCorrectThres) {
     rightMotors();
@@ -314,7 +323,7 @@ void objectDetection() {
 void avoidObject(String whichSensor) { // string input (left, front, right) // TODO ***********
   stopMotors();
   delay(500);
-  backwardsMotors(); // move backward for a couple seconds
+  backwardMotors(); // move backward for a couple seconds
   delay(3000);
   stopMotors(); // stop the motors
   delay(1000);
@@ -347,18 +356,16 @@ void avoidObject(String whichSensor) { // string input (left, front, right) // T
   }
 }
 
-// move forward -- just set the forward pins // TODO ***********
+// move forward -- just set the forward pins
 void forwardMotors() {
   isStopped = false;
   digitalWrite(motor1pin1, HIGH);
   digitalWrite(motor1pin2, LOW);
-  delay(1000);
-
   digitalWrite(motor2pin1, HIGH);
   digitalWrite(motor2pin2, LOW);
 }
 
-// stop the motors -- just set the pins // TODO ***********
+// stop the motors -- just set the pins
 void stopMotors() {
   isStopped = true;
   digitalWrite(motor1pin1, LOW);
@@ -367,7 +374,7 @@ void stopMotors() {
   digitalWrite(motor2pin2, LOW);
 }
 
-// move backward (for after running into something/object detected) -- just set the pins // TODO ***********
+// move backward (for after running into something/object detected) -- just set the pins
 void backwardMotors() {
   isStopped = false;
   digitalWrite(motor1pin1, LOW);
@@ -376,7 +383,7 @@ void backwardMotors() {
   digitalWrite(motor2pin2, HIGH);
 }
 
-// turn left -- just set the forward pins // TODO ***********
+// turn left -- just set the forward pins
 void leftMotors() {
   isStopped = false;
   digitalWrite(motor1pin1, HIGH);
@@ -385,7 +392,7 @@ void leftMotors() {
   digitalWrite(motor2pin2, LOW);
 }
 
-// turn right -- just set the forward pins // TODO ***********
+// turn right -- just set the forward pins
 void rightMotors() {
   isStopped = false;
   digitalWrite(motor1pin1, LOW);
@@ -394,20 +401,46 @@ void rightMotors() {
   digitalWrite(motor2pin2, HIGH);
 }
 
-// ultrasonic sensors get functions // TODO ***********
+// ultrasonic sensors get functions
 int getDistance1() { // left
-  
+  digitalWrite(trigPin[2], LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin[2], HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin[2], LOW);
+  duration = pulseIn(echoPin[2], HIGH);
+  distance1 = duration * 0.034 / 2;
+
+  return distance1;
 }
 
-int getDistance2() { // front // TODO ***********
-  
+int getDistance2() { // front
+  digitalWrite(trigPin[1], LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin[1], HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin[1], LOW);
+  duration = pulseIn(echoPin[1], HIGH);
+  distance2 = duration * 0.034 / 2;
+
+  return distance2;
 }
 
-int getDistance3() { // right // TODO ***********
-  
+int getDistance3() { // right
+  digitalWrite(trigPin[0], LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin[0], HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin[0], LOW);
+  duration = pulseIn(echoPin[0], HIGH);
+  distance3 = duration * 0.034 / 2;
+
+  return distance3;
 }
 
-
+int getCurrentBatt() { // battery-level \\ TODO ********
+  return 0;
+}
 
 // check whether the boat has arrived to destination
 bool checkArrival() {
@@ -449,7 +482,7 @@ void emergencyStop(){
 void resume() {
   headingCorrection();
   objectDetection();
-  startMotors();
+  forwardMotors();
   isResume = false;
   isEmergencyStop = false;
 }
@@ -460,7 +493,7 @@ void returnToStart() {
   currentTargetLon = startLon;
   headingCorrection();
   objectDetection();
-  startMotors();
+  forwardMotors();
   isReturnToStart = false;
   isEmergencyStop = false;
 }
@@ -475,18 +508,18 @@ void sendDataToServer() {
 
 // format JSON string
 String makeJsonString(float temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, bool inSession, bool atTarget){
-    String json = "{\"api_key\":" + 3 + ",
-   \"temp\":" + String(temp) + ",
-    \"curLat\":" + String(curLat) + ",
-     \"curLon\":" + String(curLon) + ",
-      \"curHead\":" + String(curHead) + ",
-       \"curBatt\":" + String(curBatt) + ",
-        \"curTargetLat\":" + String(curTargetLat) + ",
-         \"startLat\":" + String(startLat) + ",
-          \"startLong\":" + String(startLon) + ",
-           \"inSession\":" + String(inSession) + ",
-            \"currentTargetDist\":" + String(currentTargetDist) + ",
-            \"curTargetLon\":" + String(curTargetLon) + "}";
+    String json = "{\"api_key\":" + String(3) +
+    ",\"temp\":" + String(temp) +
+    ",\"curLat\":" + String(curLat) +
+    ",\"curLon\":" + String(curLon) +
+    ",\"curHead\":" + String(curHead) +
+    ",\"curBatt\":" + String(curBatt) +
+    ",\"curTargetLat\":" + String(curTargetLat) +
+    ",\"startLat\":" + String(startLat) +
+    ",\"startLong\":" + String(startLon) +
+    ",\"inSession\":" + String(inSession) +
+    ",\"currentTargetDist\":" + String(currentTargetDist) +
+    ",\"curTargetLon\":" + String(curTargetLon) + "}";
   return json;
 }
 
@@ -556,8 +589,10 @@ void loop() {
     if (arrived && currentTargetLat == startLat) { // returned to start
       stopMotors();
       inSession = false;
-      targetLats = [100,100,100,100,100,100,100]; // reset targets
-      targetLons = [100,100,100,100,100,100,100];
+      for (int i = 0; i < 7; i++) {
+        targetLats[i] = 100;
+        targetLons[i] = 100;
+      }
     }
     delay(100);
   }
