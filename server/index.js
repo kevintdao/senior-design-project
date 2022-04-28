@@ -68,6 +68,9 @@ app.get('/get_data', (req, res) => {
       { latitude: 100, longtitude: 100 },
       { latitude: 100, longtitude: 100 },
     ]
+    ref.update({
+      markers: data.markers
+    })
   }
   res.send(data)
 })
