@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
 const ref = realtimeDB.ref('/')
 
 var data;
+var sessionId;
 ref.on('value', snapshot => {
   data = snapshot.val()
 })
@@ -53,7 +54,17 @@ app.post('/send_data', (req, res) => {
     timestamp: time.toDate()
   })
   if(body.atTarget) {
+    const setData = async () => {
+      const data = await firestoreDB.collection('users').doc('demo@demo.com').collection('sessions').doc(sessionId).collection('data').add({
+        temperature: 30,
+        lat: 41.69,
+        long: -91.53,
+        time: admin.firestore.Timestamp.fromDate(new Date()).toDate()
+      })
+      console.log(data.id)
+    }
 
+    setData()
   }
   console.log('send data');
   res.send(data)
@@ -75,6 +86,15 @@ app.get('/get_data', (req, res) => {
       markers: data.markers
     })
   }
+
+  const setSession = async () => {
+    const session = await firestoreDB.collection('users').doc('demo@demo.com').collection('sessions').add({
+      start: 'start',
+      end: 'end'
+    })
+    sessionId = session.id
+  }
+  setSession()
   res.send(data)
 })
 
