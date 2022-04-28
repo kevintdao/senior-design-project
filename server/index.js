@@ -25,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
+  console.log('Here')
   res.send("Hello World")
   // console.log(firestoreDB.collection('users').doc('test@test.com').get().then(doc => {
   //   console.log(doc.data())
@@ -51,14 +52,30 @@ app.post('/send_data', (req, res) => {
     },
     timestamp: time.toDate()
   })
+  console.log('send data');
   res.send(data)
 })
 
 // send Firebase data to hardware
 app.get('/get_data', (req, res) => {
+  console.log('get data');
+  if(data.in_session == false) {
+    data.markers = [
+      { latitude: 100, longtitude: 100 },
+      { latitude: 100, longtitude: 100 },
+      { latitude: 100, longtitude: 100 },
+      { latitude: 100, longtitude: 100 },
+      { latitude: 100, longtitude: 100 },
+      { latitude: 100, longtitude: 100 },
+    ]
+  }
   res.send(data)
 })
 
 server.listen(port, () => {
   console.log(`Listening on port ${port}`)
+})
+
+wss.on('connection', (ws) => {
+  console.log("a client connected")
 })
