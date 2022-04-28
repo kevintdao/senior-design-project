@@ -46,11 +46,13 @@ app.post('/send_data', (req, res) => {
   console.log(body)
   const time = admin.firestore.Timestamp.fromDate(new Date())
   ref.update({
+    latitude: parseInt(body.curLat),
+    longtitude: parseInt(body.curLong),
     battery: parseInt(body.curBatt),
     temperature: parseInt(body.temp),
     start: {
-      latitude: parseInt(body.curLat),
-      longtitude: parseInt(body.curLon)
+      latitude: parseInt(body.startLat),
+      longtitude: parseInt(body.startLong)
     },
     timestamp: time.toDate()
   })
