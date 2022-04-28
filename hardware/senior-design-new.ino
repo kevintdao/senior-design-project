@@ -9,6 +9,9 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <Arduino_JSON.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_LIS2MDL.h>
 
 // * * * * * * * * * * * * * * * * * * * * * * * PIN VALUES * * * * * * * 
 // motor pins
@@ -31,7 +34,7 @@ const int trigPin[3] = {32, 1, 18};
 const int tmpPin = 33;
 
 // Battery pins
-const int batteryPin = 13; //replace with correct pin
+const int batteryPin = 5; //replace with correct pin
 
 // * * * * * * * * * * * * * * * * * * * * * * * VARIABLES * * * * * * * 
 OneWire oneWire(tmpPin);
@@ -45,7 +48,9 @@ SoftwareSerial ss(RXPin, TXPin); // gps variables
 
 websockets::WebsocketsClient client; // web socket client variable
 HTTPClient http;
-const String serverName = "..../send_data";
+const char *host = "team-null-server.herokuapp.com:80";
+const String serverName = "http://team-null-server.herokuapp.com:80/send_data";
+const String getServer = "http://team-null-server.herokuapp.com:80/get_data";
 
 int distance1;  // distance measurement (ultrasonic sensor variables) - left
 int distance2;  // distance measurement (ultrasonic sensor variables) - front
@@ -54,23 +59,25 @@ float duration; // for distances
 
 int dutyCycle = 255; // motor duty cycle variable
 
+Adafruit_LIS2MDL mag = Adafruit_LIS2MDL(12345); // magnetometer reference
+
 double targetLats[7] = {100,100,100,100,100,100,100}; // target received from server
 double targetLons[7] = {100,100,100,100,100,100,100};
 
-double currentTargetLat; // the target to which the boat is headed currently
-double currentTargetLon;
+double currentTargetLat = 0; // the target to which the boat is headed currently
+double currentTargetLon = 0;
 
-double currentLat; // current GPS location
-double currentLon;
+double currentLat = 0; // current GPS location
+double currentLon = 0;
 
-double startLat; // starting GPS location
-double startLon;
+double startLat = 0; // starting GPS location
+double startLon = 0;
 
-double currentHead; // current heading (mag reading)
+float currentHead = 0; // current heading (mag reading)
 
-double currentBatt; // current battery level
+double currentBatt = 0; // current battery level
 
-double currentTargetDist; // distance to current target
+double currentTargetDist = 0; // distance to current target
 
 int maxNTargets = 7; // max user entered = 6 plus a space for the starting point
 
@@ -110,10 +117,9 @@ void setupTemp() // Temp sensor setup
 
 void setupWifi() // Wifi module setup
 {
-  const char *ssid = "ssid";
-  const char *password = "pass";
-  const char *host = "frozen-chamber-50976.herokuapp.com"; // CHANGE HOST HERE
-  const uint16_t port = 80;
+  const char *ssid = "UI-DeviceNet";
+  const char *password = "UI-DeviceNet";
+  const uint16_t port = 3000;
   
   // Connect to wifi
   WiFi.begin(ssid, password);
@@ -203,10 +209,17 @@ void setupBatteryReading(){
   pinMode(batteryPin, INPUT);
 }
 
-void setupMag() //setup magnetometer \\ TODO ***********
+void setupMag() //setup magnetometer 
 {
-  
+  if(!mag.begin())
+  {
+    /* There was a problem detecting the LIS2MDL ... check your connections */
+    Serial.println("Ooops, no LIS2MDL detected ... Check your wiring!");
+    while(1);
+  }
 }
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * OTHER HELPER FUNCTIONS * * * * * * *
 void pollMessage() // Poll the web client
 {
@@ -268,10 +281,23 @@ double getCurrentLon()
   }
 }
 
-double getCurrentHead() // TODO ***********
+float getCurrentHead() // TODO ***********
 {
   // magnetometer compass code
+  sensors_event_t event;
+  mag.getEvent(&event);
 
+  float Pi = 3.14159;
+
+  // Calculate the angle of the vector y,x
+  float heading = (atan2(event.magnetic.y,event.magnetic.x) * 180) / Pi;
+
+  // Normalize to 0-360
+  if (heading < 0)
+  {
+    heading = 360 + heading;
+  }
+  return heading;
 }
 
 float getTemperature()  {
@@ -512,10 +538,16 @@ void sendDataToServer() {
   int httpResponseCode = http.POST(makeJsonString(tempC, currentLat, currentLon, currentHead, currentBatt, currentTargetLat, currentTargetLon, inSession, atTarget));
 }
 
+void getRequest() {
+  http.begin(getServer);
+  int httpResponseCode = http.GET();
+  Serial.print("HTTP Response code: ");
+  Serial.println(httpResponseCode);
+}
+
 // format JSON string
-String makeJsonString(float temp, double curLat, double curLon, double curHead, double curBatt, double curTargetLat, double curTargetLon, bool inSession, bool atTarget){
-    String json = "{\"api_key\":" + String(3) +
-    ",\"temp\":" + String(temp) +
+String makeJsonString(float temp, double curLat, double curLon, float curHead, double curBatt, double curTargetLat, double curTargetLon, bool inSession, bool atTarget){
+    String json = "{\"temp\":" + String(temp) +
     ",\"curLat\":" + String(curLat) +
     ",\"curLon\":" + String(curLon) +
     ",\"curHead\":" + String(curHead) +
@@ -531,6 +563,7 @@ String makeJsonString(float temp, double curLat, double curLon, double curHead, 
 
 // * * * * * * * * * * * * * * * * * * * * * * * SETUP * * * * * * *
 void setup() {
+  Serial.begin(9600);
   setupTemp(); // temp sensor setup
   GPSsetup(); // GPS setup
   setupMag(); // magnetometer setup
@@ -538,8 +571,10 @@ void setup() {
   setupMotors(); // setup motors
   setupWifi();  // setup wifi connection + receiving messages from the server
   setupBatteryReading(); // sets up battery pins
+  Serial.println("before setup loop!");
   // infinite loop which is broken only if targets are received from the server
   while (true) {
+    getRequest();
     startLat = getCurrentLat();
     startLon = getCurrentLon();
 
@@ -564,12 +599,15 @@ void setup() {
 
   currentTargetLat = targetLats[0];
   currentTargetLon = targetLons[0];
+  Serial.println("end of setup!");
 }
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * LOOP * * * * * * *
 void loop() { 
+  Serial.println("loop!");
   if (inSession) { // session has started and targets have been received
+    Serial.println("session started!");
     currentHead = getCurrentHead();
     currentLat = getCurrentLat();
     currentLon = getCurrentLon();
@@ -579,7 +617,7 @@ void loop() {
     tempC = getTemperature();
     currentBatt = getCurrentBatt();
     currentTargetDist = getDistance(currentLat, currentLon, currentTargetLat, currentTargetLon);
-  
+    Serial.println("tempC: " + String(tempC) + " ºC");
     headingCorrection(); // turn to bearing if angle between bearing and heading is > threshold
     objectDetection(); // make sure no obstructions are present, if so, correct
 
@@ -600,7 +638,7 @@ void loop() {
         targetLons[i] = 100;
       }
     }
-    delay(100);
+    delay(3000);
   }
   else { // not in session -- for sensor testing
     while (true) {
@@ -623,7 +661,7 @@ void loop() {
         break;
       }
       sendDataToServer();
-      delay(1000);
+      delay(3000);
     }
   }
 }
