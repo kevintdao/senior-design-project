@@ -7,6 +7,9 @@ import { rtdb } from '../utils/firebase'
 import Loading from '../components/Loading'
 
 export default function StartSessionScreen ({ navigation }) {
+  const { currentUser } = useAuth();
+  const user = currentUser.user;
+  const email = user.email;
   const [value, setValue] = useState();
   const [markers, setMarkers] = useState([])
   const [boat, setBoat] = useState()
@@ -50,7 +53,8 @@ export default function StartSessionScreen ({ navigation }) {
         longitude: boat.longitude
       },
       markers: allMarkers,
-      in_session: true
+      in_session: true,
+      user: email
     })
 
     navigation.navigate("NewSessionScreen", { 

@@ -52,6 +52,9 @@ app.post('/send_data', (req, res) => {
     },
     timestamp: time.toDate()
   })
+  if(body.atTarget) {
+
+  }
   console.log('send data');
   res.send(data)
 })
