@@ -27,7 +27,8 @@ export default function NewSessionScreen(props) {
 
   const stopSession = () => {
     update(rtRef, {
-      in_session: false
+      in_session: false,
+      return_to_start: true
     })
     
     navigation.navigate("HomeScreen")
