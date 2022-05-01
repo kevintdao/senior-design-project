@@ -76,7 +76,7 @@ export default function HomeScreen ({ navigation }) {
 
         <View style={tw`mt-5`}> 
           <View>
-            {boat.in_session == true ?
+            {boat?.in_session == true ?
               <TouchableOpacity 
                 style={tw`bg-green-600 mb-3 items-center rounded p-3`}
                 onPress={() => navigation.navigate("NewSessionScreen", { 

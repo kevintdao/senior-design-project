@@ -5,6 +5,7 @@ import MapView, { Callout, Marker } from 'react-native-maps'
 import { ref, onValue, get, update } from 'firebase/database'
 import { rtdb } from '../utils/firebase'
 import Loading from '../components/Loading'
+import { useAuth } from '../AuthContext'
 
 export default function StartSessionScreen ({ navigation }) {
   const { currentUser } = useAuth();

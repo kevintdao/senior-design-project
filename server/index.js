@@ -58,7 +58,7 @@ app.post('/send_data', (req, res) => {
   })
   if(body.in_session && !isSessionIdSet) {
     const setSession = async () => {
-      const session = await firestoreDB.collection('users').doc('demo@demo.com').collection('sessions').add({
+      const session = await firestoreDB.collection('users').doc(data.user).collection('sessions').add({
         start: 'start',
         end: 'end'
       })
@@ -70,13 +70,13 @@ app.post('/send_data', (req, res) => {
 
   if(body.atTarget) {
     const setData = async () => {
-      const data = await firestoreDB.collection('users').doc('demo@demo.com').collection('sessions').doc(sessionId).collection('data').add({
+      const sessData = await firestoreDB.collection('users').doc(data.user).collection('sessions').doc(sessionId).collection('data').add({
         temperature: 30,
         lat: 41.69,
         long: -91.53,
         time: admin.firestore.Timestamp.fromDate(new Date()).toDate()
       })
-      console.log(data.id)
+      console.log(sessData.id)
     }
 
     setData()
