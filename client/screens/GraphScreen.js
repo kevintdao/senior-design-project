@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native'
 import React from 'react'
 import MapGraph from '../components/MapGraph'
 import tw from 'twrnc'
@@ -10,7 +10,8 @@ export default function GraphScreen(props) {
   const data = props.route.params.session_data;
 
   return (
-    <View style={tw`flex-1 items-center`}>
+    <View style={tw`flex-1`}>
+      <ScrollView contentContainerStyle={tw`items-center`}>
       <MapGraph data={data}/>
       <PagerView initialPage={0} style={styles.pager}>
         <View key="0">
@@ -22,6 +23,7 @@ export default function GraphScreen(props) {
           <LineGraph data={data}/>
         </View>
       </PagerView>
+      </ScrollView>
     </View>
   )
 }

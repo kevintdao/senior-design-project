@@ -19,3 +19,4 @@ web-build/
 .idea/
 
 */service-account.json*
+*/google-credentials.json*

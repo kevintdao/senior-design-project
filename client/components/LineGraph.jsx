@@ -31,7 +31,7 @@ export default function LineGraph({ data }) {
       borderRadius: 10
     },
     propsForDots: {
-      r: "6",
+      r: "3",
       strokeWidth: "2",
       stroke: "#000000"
     }

@@ -5,12 +5,17 @@ import MapView, { Callout, Marker } from 'react-native-maps'
 import { ref, onValue, get, update } from 'firebase/database'
 import { rtdb } from '../utils/firebase'
 import Loading from '../components/Loading'
+import { useAuth } from '../AuthContext'
 
 export default function StartSessionScreen ({ navigation }) {
+  const { currentUser } = useAuth();
+  const user = currentUser.user;
+  const email = user.email;
   const [value, setValue] = useState();
   const [markers, setMarkers] = useState([])
   const [boat, setBoat] = useState()
   const rtRef = ref(rtdb)
+  const maxMarkers = 6
 
   const placeMarker = (type) => {
     setValue(type);
@@ -30,12 +35,27 @@ export default function StartSessionScreen ({ navigation }) {
   }
 
   const saveMarkers = () => {
+    const unusedMarkers = []
+    if(markers.length != 6) {
+      const remain = maxMarkers - markers.length
+
+      for(let i = 0; i < remain; i++) {
+        unusedMarkers.push({
+          latitude: 100,
+          longitude: 100
+        })
+      }
+    }
+
+    const allMarkers = markers.concat(unusedMarkers)
     update(rtRef, {
       start: {
         latitude: boat.latitude,
         longitude: boat.longitude
       },
-      markers: markers
+      markers: allMarkers,
+      in_session: true,
+      user: email
     })
 
     navigation.navigate("NewSessionScreen", { 
@@ -79,14 +99,19 @@ export default function StartSessionScreen ({ navigation }) {
           </Marker>
         ))}
       </MapView>
-      <View style={tw`mt-2`}>
+      <View style={tw`mt-2 items-center`}>
         <Text style={tw`text-3xl font-bold`}>New Session</Text>
+        <Text style={tw``}>{`Markers: ${markers.length}/${maxMarkers}`}</Text>
       </View>
 
       <View style={tw`w-4/5 max-w-md`}> 
         <TouchableOpacity 
-          style={tw`mt-3 items-center border border-green-600 rounded-md p-3 ${value == 'end' ? "bg-gray-300" : "bg-green-600"}`}
+          style={tw`mt-3 items-center border border-green-600 rounded-md p-3 
+            ${value == 'end' ? "bg-gray-300" : 
+            markers.length == 6 ? "bg-gray-300 border-gray-600" : "bg-green-600"}`
+          }
           onPress={() => placeMarker('end')}
+          disabled={markers.length == 6}
         >
           <Text style={tw`text-white text-lg`}>Place End Marker</Text>
         </TouchableOpacity>
