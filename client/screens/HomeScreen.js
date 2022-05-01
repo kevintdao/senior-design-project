@@ -67,13 +67,6 @@ export default function HomeScreen ({ navigation }) {
           <Text>{email}</Text>
         </Text>
       
-        <View style={tw`mb-2`}>
-          <Text style={tw`text-3xl font-bold text-gray-900 mt-5 mb-5`}>Last Measurement</Text>
-          <LastMeasurement data={sess} />
-        </View>
-
-
-
         <View style={tw`mt-5`}> 
           <View>
             {boat?.in_session == true ?
@@ -92,17 +85,6 @@ export default function HomeScreen ({ navigation }) {
                 <Text style={tw`text-white text-lg`}>Begin New Session</Text>
               </TouchableOpacity>
             }
-          </View>
-          <View>
-            <TouchableOpacity style={tw`bg-green-600 mb-3 items-center rounded p-3`}>
-              <Text style={tw`text-white text-lg`}>Sensor Testing</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View>
-            <TouchableOpacity style={tw`bg-green-800 items-center rounded p-3 mb-3`}>
-              <Text style={tw`text-white text-lg`}>Help</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </View>
