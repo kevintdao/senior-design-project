@@ -77,7 +77,7 @@ export default function NewSessionScreen(props) {
           style={tw`my-3 items-center rounded p-3 ${boat.emergency_stop ? 'bg-red-600' : 'bg-green-600'}`}
           onPress={toggleEmergency}
         >
-          <Text style={tw`text-white text-lg`}>{boat.emergency_stop ? 'Emergency Stop' : 'Resume'}</Text>
+          <Text style={tw`text-white text-lg`}>{boat.emergency_stop == false ? 'Emergency Stop' : 'Resume'}</Text>
         </TouchableOpacity>
       </View>
 
